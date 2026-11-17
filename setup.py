@@ -35,10 +35,10 @@ setup(
     install_requires=[
         "asyncio-mqtt==0.16.1",
         "aiofiles==23.2.1",
-        "aiohttp==3.9.1",
+        "aiohttp==3.14.4",
         "pydantic==2.5.3",
         "pydantic-settings==2.1.0",
-        "python-dotenv==1.0.0",
+        "python-dotenv==1.2.2",
         "pyyaml==6.0.1",
         "aiosqlite==0.19.0",
         "playwright==1.40.0",
