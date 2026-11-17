@@ -30,6 +30,7 @@ from digi_mitra.exam_engine import ExamPaperGenerator
 from digi_mitra.app_permissions import AppPermissionManager
 from digi_mitra.legal_etiquette import LegalKnowledgeAndEtiquetteEngine
 from digi_mitra.security_auditor import SecurityAuditorEngine
+from digi_mitra.scheduler_engine import TaskSchedulerEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -46,6 +47,7 @@ exam_engine = ExamPaperGenerator()
 permission_mgr = AppPermissionManager()
 legal_engine = LegalKnowledgeAndEtiquetteEngine()
 security_auditor = SecurityAuditorEngine()
+task_scheduler = TaskSchedulerEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -133,6 +135,18 @@ async def process_user_command(query: str = Form(...)):
         services_str = "<br>• ".join(audit_res["active_local_services"]) if audit_res["active_local_services"] else "Sabhi private ports surakshit hain."
         recom_str = "<br>• ".join(audit_res["recommendations"])
         result["reply"] = f"🛡️ <b>Ethical Cyber Security & Vulnerability Audit Report</b>:<br><b>Active Local Services:</b><br>• {services_str}<br><br><b>Suraksha Salah (Defensive Measures):</b><br>• {recom_str}<br><br><b>Status:</b> {audit_res['status']}"
+
+    elif any(k in query.lower() for k in ["samay", "kab", "schedule", "remind", "roz", "har din", "alarm", "tarikh"]):
+        # Extract time or frequency
+        freq = "daily" if any(f in query.lower() for f in ["roz", "daily", "har din"]) else "once"
+        sched_time = "09:00 AM"
+        import re
+        time_match = re.search(r'(\d{1,2}(?::\d{2})?\s*(?:baje|am|pm)?)', query.lower())
+        if time_match:
+            sched_time = time_match.group(1)
+
+        sched_res = task_scheduler.add_scheduled_task(command=query, schedule_time=sched_time, frequency=freq)
+        result["reply"] = sched_res["message"]
 
     elif intent == "mandi_farming":
         result["reply"] = f"🌾 Mandi Bhav & e-NAM: '{query}' live rates updated from Rajasthan APMC mandis."
