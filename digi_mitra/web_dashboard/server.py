@@ -75,7 +75,16 @@ async def dashboard_home(request: Request):
 async def process_user_command(query: str = Form(...)):
     parsed = nlu.parse_intent(query)
     intent = parsed["intent"]
-    
+    q_lower = query.lower()
+
+    # Check for sensitive app mention (WhatsApp, Gallery, Passwords, etc.)
+    for sensitive_kw in ["whatsapp", "gallery", "photo", "password", "setting", "bank"]:
+        if sensitive_kw in q_lower:
+            alert_check = permission_mgr.request_access_with_security_alert(sensitive_kw)
+            if not alert_check.get("allowed"):
+                reply = f"🚨 <b>SECURITY ALERT (Suraksha Chetavni)</b>:<br>{alert_check['security_alert']}<br><br>👉 <i>{alert_check['prompt']}</i><br><small style='color:#f87171;'>Suraksha ke niyam anusar jab tak aap Dashboard se 'Allow' switch ON nahi karenge, yeh app 100% blocked rahega.</small>"
+                return JSONResponse({"intent": "security_alert", "reply": legal_engine.format_respectful_response(reply)})
+
     result = {"intent": intent, "parsed": parsed, "reply": ""}
 
     if intent == "trading_analysis":
