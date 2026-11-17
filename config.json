@@ -1,0 +1,181 @@
+{
+  "app": {
+    "name": "Wife God",
+    "version": "1.0.0",
+    "mode": "production",
+    "input_folder": "./input_documents",
+    "output_folder": "./output",
+    "temp_folder": "./temp",
+    "log_level": "INFO"
+  },
+  "database": {
+    "path": "./data/wife_god.db"
+  },
+  "ollama": {
+    "url": "http://localhost:11434",
+    "model": "llama3:8b",
+    "timeout": 120,
+    "temperature": 0.1,
+    "max_tokens": 4096
+  },
+  "voice": {
+    "tts_engine": "pyttsx3",
+    "tts_rate": 150,
+    "tts_volume": 0.9,
+    "tts_voice": "hindi",
+    "stt_engine": "whisper",
+    "whisper_model": "base",
+    "language": "hi",
+    "vad_threshold": 0.5,
+    "sample_rate": 16000
+  },
+  "doc": {
+    "ocr_engine": "easyocr",
+    "easyocr_languages": ["en", "hi"],
+    "tesseract_path": "tesseract",
+    "max_file_size_mb": 10,
+    "compression_quality": 85,
+    "output_dpi": 200,
+    "size_limits": {
+      "signature_kb": 50,
+      "photo_kb": 100,
+      "document_kb": 500,
+      "aadhaar_kb": 200
+    },
+    "supported_formats": [".jpg", ".jpeg", ".png", ".pdf", ".tiff", ".bmp"]
+  },
+  "captcha": {
+    "solver": "opencv",
+    "model_path": "./models/captcha_model.onnx",
+    "fallback_to_human": true,
+    "human_timeout": 60
+  },
+  "fallback": {
+    "enabled": true,
+    "template_threshold": 0.8,
+    "click_delay": 0.1,
+    "type_delay": 0.05
+  },
+  "emitra": {
+    "sso_url": "https://sso.rajasthan.gov.in",
+    "portal_url": "https://emitra.rajasthan.gov.in",
+    "username": "",
+    "password": "",
+    "headless": false,
+    "browser": "chromium",
+    "viewport": {"width": 1920, "height": 1080},
+    "timeout": 30000,
+    "services": {
+      "aadhaar_enrollment": {"url": "/service/aadhaar-enrollment", "documents": ["aadhaar", "photo", "address_proof"]},
+      "caste_certificate": {"url": "/service/caste-certificate", "documents": ["aadhaar", "photo", "income_certificate"]},
+      "income_certificate": {"url": "/service/income-certificate", "documents": ["aadhaar", "photo", "salary_slip"]},
+      "domicile_certificate": {"url": "/service/domicile-certificate", "documents": ["aadhaar", "photo", "address_proof"]},
+      "birth_certificate": {"url": "/service/birth-certificate", "documents": ["aadhaar", "hospital_record", "parents_aadhaar"]},
+      "death_certificate": {"url": "/service/death-certificate", "documents": ["aadhaar", "hospital_record", "cremation_record"]},
+      "marriage_registration": {"url": "/service/marriage-registration", "documents": ["aadhaar", "photo", "age_proof", "witness_aadhaar"]},
+      "pension_scheme": {"url": "/service/pension-scheme", "documents": ["aadhaar", "photo", "bank_passbook", "age_proof"]},
+      "ration_card": {"url": "/service/ration-card", "documents": ["aadhaar", "photo", "address_proof", "family_details"]},
+      "land_record": {"url": "/service/land-record", "documents": ["aadhaar", "khatauni", "khasra"]}
+    }
+  },
+  "twitter": {
+    "username": "",
+    "password": "",
+    "headless": false,
+    "browser": "chromium",
+    "viewport": {"width": 1920, "height": 1080},
+    "timeout": 30000,
+    "session_file": "./data/twitter_session.json",
+    "rate_limits": {
+      "tweets_per_hour": 50,
+      "dms_per_hour": 100,
+      "follows_per_hour": 50
+    }
+  },
+  "farm": {
+    "fields_file": "./data/fields.json",
+    "default_crop": "wheat",
+    "default_soil": "loamy",
+    "default_irrigation": "tubewell"
+  },
+  "smart_home": {
+    "mqtt": {
+      "enabled": false,
+      "host": "localhost",
+      "port": 1883,
+      "username": "",
+      "password": ""
+    },
+    "dji": {
+      "enabled": false,
+      "serial_number": ""
+    }
+  },
+  "health": {
+    "reminders_enabled": true,
+    "appointment_reminder_hours": 2,
+    "medicine_refill_reminder_days": 7,
+    "vaccination_reminder_days": 30
+  },
+  "passive_income": {
+    "platforms": {
+      "honeygain": {"enabled": false, "api_key": ""},
+      "mystnodes": {"enabled": false, "api_key": ""},
+      "trafficmonetizer": {"enabled": false, "api_key": ""},
+      "golem": {"enabled": false, "config_params": {"data_dir": "./golem-data"}},
+      "akash": {"enabled": false, "wallet_address": ""}
+    },
+    "resource_limits": {
+      "max_cpu_percent": 80,
+      "max_ram_percent": 85,
+      "pause_on_high_usage": true
+    }
+  },
+  "video": {
+    "whisper_model": "base",
+    "default_fps": 30,
+    "default_resolution": [1920, 1080],
+    "compression_quality": 85
+  },
+  "market": {
+    "sentinel": {
+      "enabled": false,
+      "client_id": "",
+      "client_secret": "",
+      "instance_id": ""
+    },
+    "dji": {
+      "enabled": false,
+      "serial_number": ""
+    }
+  },
+  "data_products": {
+    "output_dir": "./data_products",
+    "gumroad": {
+      "enabled": false,
+      "access_token": ""
+    }
+  },
+  "enam": {
+    "enam_api_key": "",
+    "agmarknet_api_key": "",
+    "indiamart_api_key": "",
+    "tradeindia_api_key": "",
+    "farmertak_api_key": "",
+    "sources_enabled": ["enam", "agmarknet", "indiamart"]
+  },
+  "google_sheets": {
+    "credentials_path": "./config/google_credentials.json",
+    "spreadsheet_id": "",
+    "user_email": ""
+  },
+  "sentinel": {
+    "client_id": "",
+    "client_secret": "",
+    "instance_id": ""
+  },
+  "dji": {
+    "enabled": false,
+    "serial_number": ""
+  }
+}

@@ -1,0 +1,104 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wife-god-emitter"
+version = "1.0.0"
+description = "100% Local eMitra (Rajasthan SSO) + Twitter (X) Automation Agent"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Wife God Team", email = "support@wifegod.local"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "asyncio-mqtt==0.16.1",
+    "aiofiles==23.2.1",
+    "aiohttp==3.9.1",
+    "pydantic==2.5.3",
+    "pydantic-settings==2.1.0",
+    "python-dotenv==1.0.0",
+    "pyyaml==6.0.1",
+    "aiosqlite==0.19.0",
+    "playwright==1.40.0",
+    "pyautogui==0.9.54",
+    "pygetwindow==0.0.9",
+    "pillow==10.1.0",
+    "easyocr==1.7.1",
+    "pytesseract==0.3.10",
+    "opencv-python-headless==4.9.0.80",
+    "numpy==1.26.2",
+    "img2pdf==0.4.4",
+    "pdfplumber==0.10.3",
+    "fitz==0.0.1.dev2",
+    "pyttsx3==2.90",
+    "faster-whisper==1.0.3",
+    "sounddevice==0.4.6",
+    "soundfile==0.12.1",
+    "ollama==0.2.0",
+    "tqdm==4.66.1",
+    "rich==13.7.0",
+    "click==8.1.7",
+    "python-dateutil==2.8.2",
+    "python-magic==0.4.27",
+    "psutil==5.9.6",
+    "croniter==2.0.0",
+    "GPUtil==1.4.0",
+    "moviepy==1.0.3",
+    "whisper==1.1.10",
+    "reportlab==4.0.8",
+    "openpyxl==3.1.2",
+    "paho-mqtt==1.6.1",
+    "psutil==5.9.6",
+]
+
+[project.optional-dependencies]
+gpu = [
+    "torch==2.1.2",
+    "torchvision==0.16.2",
+]
+dev = [
+    "pytest==7.4.4",
+    "pytest-asyncio==0.23.3",
+    "black==23.12.1",
+    "ruff==0.1.15",
+    "mypy==1.7.1",
+]
+
+[project.scripts]
+wife-god = "main:main"
+wife-god-cli = "main:main"
+wife-god-setup = "scripts.setup:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["wife_god_emitter*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["E", "F", "I", "W", "UP", "B", "C4", "PTH"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

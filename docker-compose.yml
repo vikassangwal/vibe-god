@@ -1,0 +1,190 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # Wife God Main Application
+  # ============================================
+  wife-god:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wife-god
+    restart: unless-stopped
+    user: "1000:1000"
+    volumes:
+      - ./data:/app/data
+      - ./input_documents:/app/input_documents
+      - ./output:/app/output
+      - ./temp:/app/temp
+      - ./logs:/app/logs
+      - ./models:/app/models
+      - ./data_products:/app/data_products
+      - ./config.json:/app/config.json:ro
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    depends_on:
+      - ollama
+    networks:
+      - wife-god-network
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+
+  # ============================================
+  # Ollama LLM Service
+  # ============================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: wife-god-ollama
+    restart: unless-stopped
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+          cpus: '4.0'
+        reservations:
+          memory: 4G
+          cpus: '2.0'
+    networks:
+      - wife-god-network
+    # Pre-pull model on startup
+    command: >
+      sh -c "ollama serve &
+      sleep 5 &&
+      ollama pull llama3:8b &&
+      wait"
+
+  # ============================================
+  # Optional: Grafana for Monitoring
+  # ============================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: wife-god-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=changeme
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - wife-god-network
+    profiles:
+      - monitoring
+
+  # ============================================
+  # Optional: Prometheus for Metrics
+  # ============================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: wife-god-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - wife-god-network
+    profiles:
+      - monitoring
+
+  # ============================================
+  # Optional: MQTT Broker for Smart Home
+  # ============================================
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: wife-god-mqtt
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-logs:/mosquitto/logs
+    networks:
+      - wife-god-network
+    profiles:
+      - smart-home
+
+  # ============================================
+  # Optional: Redis for Caching
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: wife-god-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - wife-god-network
+
+  # ============================================
+  # Optional: PostgreSQL (if needed for scaling)
+  # ============================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: wife-god-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=wifegod
+      - POSTGRES_USER=wifegod
+      - POSTGRES_PASSWORD=changeme
+    networks:
+      - wife-god-network
+    profiles:
+      - database
+
+volumes:
+  ollama-data:
+  grafana-data:
+  prometheus-data:
+  mosquitto-data:
+  mosquitto-logs:
+  redis-data:
+  postgres-data:
+
+networks:
+  wife-god-network:
+    driver: bridge
+    name: wife-god-network
+
+# ============================================
+# Usage:
+# ============================================
+# docker-compose up -d                    # Start core services (wife-god + ollama)
+# docker-compose --profile monitoring up -d  # With monitoring
+# docker-compose --profile smart-home up -d  # With MQTT
+# docker-compose --profile database up -d    # With PostgreSQL
+# docker-compose --profile all up -d         # Everything

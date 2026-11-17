@@ -1,0 +1,53 @@
+[Unit]
+Description=Wife God - 100% Local eMitra + Twitter Automation Agent
+Documentation=https://github.com/wifegod/wife-god-emitter
+After=network.target sound.target ollama.service
+Wants=network.target ollama.service
+Requires=ollama.service
+
+[Service]
+Type=simple
+User=wifegod
+Group=wifegod
+WorkingDirectory=/opt/wife-god
+ExecStart=/opt/wife-god/venv/bin/python -m main --daemon
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=wife-god
+
+# Environment
+Environment=PATH=/opt/wife-god/venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/opt/wife-god
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=OLLAMA_URL=http://localhost:11434
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/opt/wife-god/logs /opt/wife-god/data /opt/wife-god/output /opt/wife-god/temp /opt/wife-god/data_products /opt/wife-god/input_documents
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+# Resource limits
+MemoryLimit=4G
+CPUQuota=200%
+TasksMax=100
+
+# Restart policy
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target
