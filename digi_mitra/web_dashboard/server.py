@@ -31,6 +31,7 @@ from digi_mitra.app_permissions import AppPermissionManager
 from digi_mitra.legal_etiquette import LegalKnowledgeAndEtiquetteEngine
 from digi_mitra.security_auditor import SecurityAuditorEngine
 from digi_mitra.scheduler_engine import TaskSchedulerEngine
+from digi_mitra.chat_brain import ConversationalBrain
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -48,6 +49,7 @@ permission_mgr = AppPermissionManager()
 legal_engine = LegalKnowledgeAndEtiquetteEngine()
 security_auditor = SecurityAuditorEngine()
 task_scheduler = TaskSchedulerEngine()
+chat_brain = ConversationalBrain()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -152,12 +154,14 @@ async def process_user_command(query: str = Form(...)):
         result["reply"] = f"🌾 Mandi Bhav & e-NAM: '{query}' live rates updated from Rajasthan APMC mandis."
 
     else:
-        # General AI query
-        res_data = await research_engine.autonomous_research(query)
+        # General AI query & Natural Human-like Chat
+        reply_text = chat_brain.chat(query)
+        result["reply"] = reply_text
+
     # Apply Clean Language, Etiquette & Legal Compliance Note
     compliance = legal_engine.check_legal_compliance(intent)
     clean_reply = legal_engine.format_respectful_response(result["reply"])
-    if compliance.get("legal_note"):
+    if compliance.get("legal_note") and intent in ["trading_analysis", "emitra_service"]:
         clean_reply += f"\n\n<small style='color:#94a3b8;'>{compliance['legal_note']}</small>"
     result["reply"] = clean_reply
 
