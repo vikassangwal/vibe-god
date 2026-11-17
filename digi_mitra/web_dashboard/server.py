@@ -33,6 +33,7 @@ from digi_mitra.security_auditor import SecurityAuditorEngine
 from digi_mitra.scheduler_engine import TaskSchedulerEngine
 from digi_mitra.chat_brain import ConversationalBrain
 from digi_mitra.history_learner import HistoryLearningEngine
+from digi_mitra.human_chat import NaturalHumanChatEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -51,6 +52,7 @@ legal_engine = LegalKnowledgeAndEtiquetteEngine()
 security_auditor = SecurityAuditorEngine()
 task_scheduler = TaskSchedulerEngine()
 chat_brain = ConversationalBrain()
+human_chat = NaturalHumanChatEngine()
 history_learner = HistoryLearningEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
@@ -156,11 +158,14 @@ async def process_user_command(query: str = Form(...)):
         result["reply"] = f"🌾 Mandi Bhav & e-NAM: '{query}' live rates updated from Rajasthan APMC mandis."
 
     else:
-        # General AI query & Natural Human-like Chat
-        reply_text = chat_brain.chat(query)
-        result["reply"] = reply_text
+        # 100% Real Human Conversational Vibe (Samne wale ko bilkul pata na chale)
+        human_reply = human_chat.chat_like_real_human(query)
+        result["reply"] = human_reply
+        # Save interaction into lifelong memory & learn from it
+        history_learner.record_interaction(query, human_reply, intent)
+        return JSONResponse(result)
 
-    # Apply Clean Language, Etiquette & Legal Compliance Note
+    # Apply Clean Language, Etiquette & Legal Compliance Note for formal tools
     compliance = legal_engine.check_legal_compliance(intent)
     clean_reply = legal_engine.format_respectful_response(result["reply"])
     if compliance.get("legal_note") and intent in ["trading_analysis", "emitra_service"]:
