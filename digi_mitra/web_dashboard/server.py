@@ -28,6 +28,7 @@ from digi_mitra.research.research_engine import SelfLearningResearchEngine
 from digi_mitra.video.video_engine import VideoAutomationEngine
 from digi_mitra.exam_engine import ExamPaperGenerator
 from digi_mitra.app_permissions import AppPermissionManager
+from digi_mitra.legal_etiquette import LegalKnowledgeAndEtiquetteEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -42,6 +43,7 @@ video_engine = VideoAutomationEngine()
 doc_processor = DocProcessor(DocConfig())
 exam_engine = ExamPaperGenerator()
 permission_mgr = AppPermissionManager()
+legal_engine = LegalKnowledgeAndEtiquetteEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -121,7 +123,12 @@ async def process_user_command(query: str = Form(...)):
     else:
         # General AI query
         res_data = await research_engine.autonomous_research(query)
-        result["reply"] = f"🤖 Digi Mitra execute kar raha hai: {query}"
+    # Apply Clean Language, Etiquette & Legal Compliance Note
+    compliance = legal_engine.check_legal_compliance(intent)
+    clean_reply = legal_engine.format_respectful_response(result["reply"])
+    if compliance.get("legal_note"):
+        clean_reply += f"\n\n<small style='color:#94a3b8;'>{compliance['legal_note']}</small>"
+    result["reply"] = clean_reply
 
     return JSONResponse(result)
 
