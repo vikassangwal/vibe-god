@@ -38,6 +38,7 @@ from digi_mitra.mobile_launcher import MobileAppLauncherEngine
 from digi_mitra.wealth_engine import AutonomousWealthEngine
 from digi_mitra.client_guardian import ClientAcquisitionGuardianEngine
 from digi_mitra.target_one_lakh import OneLakhTargetPlanner
+from digi_mitra.relentless_worker import RelentlessTargetWorker
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -62,6 +63,7 @@ mobile_launcher = MobileAppLauncherEngine(permission_mgr)
 wealth_engine = AutonomousWealthEngine()
 client_guardian = ClientAcquisitionGuardianEngine()
 one_lakh_planner = OneLakhTargetPlanner()
+relentless_worker = RelentlessTargetWorker()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -166,6 +168,11 @@ async def process_user_command(query: str = Form(...)):
             strat_html.append(f"<b>{st['category']}</b><br>🎯 <i>Target:</i> {st['potential_clients']}<br>💬 <i>Kaise layega:</i> {st['approach']}<br>💸 <i>Kharcha:</i> <b>{st['cost']}</b>")
         strat_str = "<br><br>".join(strat_html)
         result["reply"] = f"🎯 <b>Digi Mitra Client Acquisition System (Zero Kharcha):</b><br><br>{strat_str}<br><br><small style='color:#34d399;'>{client_res['privacy_assurance']}</small>"
+
+    elif any(k in query.lower() for k in ["kitna bhi kam", "chahe jitna", "target pura", "non stop", "24/7", "rukna mat"]):
+        relentless_res = relentless_worker.start_relentless_execution()
+        actions_str = "<br>• ".join(relentless_res["actions_underway"])
+        result["reply"] = f"🔥 <b>{relentless_res['mode']}</b><br>💪 <i>{relentless_res['motto']}</i><br><br>⚙️ <b>Active Batch Pipelines Running:</b><br>• {actions_str}<br><br>⚡ <b>Energy Status:</b> {relentless_res['status']}"
 
     elif any(k in query.lower() for k in ["1lakh", "1 lakh", "ek lakh", "lakh", "100000", "investment"]):
         roadmap = one_lakh_planner.generate_action_roadmap()
