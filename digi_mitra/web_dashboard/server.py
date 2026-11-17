@@ -37,6 +37,7 @@ from digi_mitra.human_chat import NaturalHumanChatEngine
 from digi_mitra.mobile_launcher import MobileAppLauncherEngine
 from digi_mitra.wealth_engine import AutonomousWealthEngine
 from digi_mitra.client_guardian import ClientAcquisitionGuardianEngine
+from digi_mitra.target_one_lakh import OneLakhTargetPlanner
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -60,6 +61,7 @@ history_learner = HistoryLearningEngine()
 mobile_launcher = MobileAppLauncherEngine(permission_mgr)
 wealth_engine = AutonomousWealthEngine()
 client_guardian = ClientAcquisitionGuardianEngine()
+one_lakh_planner = OneLakhTargetPlanner()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -164,6 +166,14 @@ async def process_user_command(query: str = Form(...)):
             strat_html.append(f"<b>{st['category']}</b><br>🎯 <i>Target:</i> {st['potential_clients']}<br>💬 <i>Kaise layega:</i> {st['approach']}<br>💸 <i>Kharcha:</i> <b>{st['cost']}</b>")
         strat_str = "<br><br>".join(strat_html)
         result["reply"] = f"🎯 <b>Digi Mitra Client Acquisition System (Zero Kharcha):</b><br><br>{strat_str}<br><br><small style='color:#34d399;'>{client_res['privacy_assurance']}</small>"
+
+    elif any(k in query.lower() for k in ["1lakh", "1 lakh", "ek lakh", "lakh", "100000", "investment"]):
+        roadmap = one_lakh_planner.generate_action_roadmap()
+        pillar_items = []
+        for p in roadmap["pillars"]:
+            pillar_items.append(f"<b>{p['pillar']}</b> (Lakshya: <b>{p['monthly_goal']}</b>)<br>⚡ <i>Roz ka Action:</i> {p['daily_action']}<br>💼 <i>Investment Use:</i> {p['investment_use']}")
+        pillar_html = "<br><br>".join(pillar_items)
+        result["reply"] = f"🎯 <b>1-Lakh Monthly Realistic Roadmap (Execution Plan):</b><br>Daily Target: <b>{roadmap['daily_run_rate']}</b><br><br>{pillar_html}<br><br>💡 <b>Summary:</b> {roadmap['summary']}"
 
     elif any(k in query.lower() for k in ["paise", "pese", "kamao", "earning", "kamana", "income", "wealth", "rupaye"]):
         wealth_data = wealth_engine.analyze_earning_opportunities()
