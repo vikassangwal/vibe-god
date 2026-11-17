@@ -41,6 +41,7 @@ from digi_mitra.target_one_lakh import OneLakhTargetPlanner
 from digi_mitra.relentless_worker import RelentlessTargetWorker
 from digi_mitra.universal_online_worker import UniversalOnlineWorkEngine
 from digi_mitra.freelance_engine import FreelanceExecutionEngine
+from digi_mitra.wise_mentor import WiseMentorGuardian
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -68,6 +69,7 @@ one_lakh_planner = OneLakhTargetPlanner()
 relentless_worker = RelentlessTargetWorker()
 online_worker = UniversalOnlineWorkEngine()
 freelance_engine = FreelanceExecutionEngine()
+wise_mentor = WiseMentorGuardian()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -95,6 +97,11 @@ async def dashboard_home(request: Request):
 
 @app.post("/api/ask")
 async def process_user_command(query: str = Form(...)):
+    # 1. Wise Mentor Check: Agar Vikas ji galti kar rahe hon toh toke aur sahi rasta bataye
+    is_mistake, correction_advice = wise_mentor.inspect_and_correct_mistakes(query)
+    if is_mistake:
+        return JSONResponse({"intent": "mistake_correction", "reply": correction_advice})
+
     parsed = nlu.parse_intent(query)
     intent = parsed["intent"]
     q_lower = query.lower()
