@@ -34,6 +34,7 @@ from digi_mitra.scheduler_engine import TaskSchedulerEngine
 from digi_mitra.chat_brain import ConversationalBrain
 from digi_mitra.history_learner import HistoryLearningEngine
 from digi_mitra.human_chat import NaturalHumanChatEngine
+from digi_mitra.mobile_launcher import MobileAppLauncherEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -54,6 +55,7 @@ task_scheduler = TaskSchedulerEngine()
 chat_brain = ConversationalBrain()
 human_chat = NaturalHumanChatEngine()
 history_learner = HistoryLearningEngine()
+mobile_launcher = MobileAppLauncherEngine(permission_mgr)
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -135,6 +137,21 @@ async def process_user_command(query: str = Form(...)):
         res_data = await research_engine.autonomous_research(query)
         d = res_data.get("data", {})
         result["reply"] = f"🧠 Research Complete ({d.get('topic')}):\n{d.get('summary')}"
+
+    elif any(k in query.lower() for k in ["kholo", "open", "launch", "chalao"]):
+        # Find which app
+        target_app = "chrome"
+        for app_candidate in ["zerodha", "groww", "tradingview", "emitra", "chrome", "whatsapp"]:
+            if app_candidate in query.lower():
+                target_app = app_candidate
+                break
+
+        launch_data = mobile_launcher.prepare_mobile_launch(target_app)
+        if launch_data["can_open"]:
+            result["reply"] = f"📱 {launch_data['alert']}<br><b>{launch_data['message']}</b>"
+            result["launch_url"] = launch_data["scheme_url"]
+        else:
+            result["reply"] = f"{launch_data['alert']}<br><small style='color:#f87171;'>{launch_data['instruction']}</small>"
 
     elif "hack" in query.lower() or "security" in query.lower() or "suraksha" in query.lower() or "audit" in query.lower():
         audit_res = security_auditor.check_local_security_posture()

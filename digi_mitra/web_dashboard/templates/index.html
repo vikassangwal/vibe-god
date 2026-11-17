@@ -212,6 +212,13 @@
                 const data = await resp.json();
                 botThinking.remove();
                 appendMessage(data.reply || 'Task complete ho gaya!');
+
+                // Mobile Auto-Open App with Security Alert
+                if (data.launch_url) {
+                    setTimeout(() => {
+                        window.location.href = data.launch_url;
+                    }, 1200);
+                }
             } catch (err) {
                 botThinking.remove();
                 appendMessage('⚠️ Error: ' + err.message);
