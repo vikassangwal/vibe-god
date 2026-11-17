@@ -35,6 +35,7 @@ from digi_mitra.chat_brain import ConversationalBrain
 from digi_mitra.history_learner import HistoryLearningEngine
 from digi_mitra.human_chat import NaturalHumanChatEngine
 from digi_mitra.mobile_launcher import MobileAppLauncherEngine
+from digi_mitra.wealth_engine import AutonomousWealthEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -56,6 +57,7 @@ chat_brain = ConversationalBrain()
 human_chat = NaturalHumanChatEngine()
 history_learner = HistoryLearningEngine()
 mobile_launcher = MobileAppLauncherEngine(permission_mgr)
+wealth_engine = AutonomousWealthEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -153,11 +155,13 @@ async def process_user_command(query: str = Form(...)):
         else:
             result["reply"] = f"{launch_data['alert']}<br><small style='color:#f87171;'>{launch_data['instruction']}</small>"
 
-    elif "hack" in query.lower() or "security" in query.lower() or "suraksha" in query.lower() or "audit" in query.lower():
-        audit_res = security_auditor.check_local_security_posture()
-        services_str = "<br>• ".join(audit_res["active_local_services"]) if audit_res["active_local_services"] else "Sabhi private ports surakshit hain."
-        recom_str = "<br>• ".join(audit_res["recommendations"])
-        result["reply"] = f"🛡️ <b>Ethical Cyber Security & Vulnerability Audit Report</b>:<br><b>Active Local Services:</b><br>• {services_str}<br><br><b>Suraksha Salah (Defensive Measures):</b><br>• {recom_str}<br><br><b>Status:</b> {audit_res['status']}"
+    elif any(k in query.lower() for k in ["paise", "pese", "kamao", "earning", "kamana", "income", "wealth", "rupaye"]):
+        wealth_data = wealth_engine.analyze_earning_opportunities()
+        stream_items = []
+        for s in wealth_data["streams"]:
+            stream_items.append(f"<b>{s['stream']}</b><br>💵 <i>Kamai:</i> {s['daily_potential']}<br>👉 <i>Kaise karega:</i> {s['action']}")
+        streams_html = "<br><br>".join(stream_items)
+        result["reply"] = f"💰 <b>Digi Mitra Automated Wealth & Earning Blueprints:</b><br><br>{streams_html}<br><br>⚡ <i>Bataiye inme se kaunsa kaam abhi shuru karein? Digi Mitra turant execution shuru kar dega!</i>"
 
     elif any(k in query.lower() for k in ["samay", "kab", "schedule", "remind", "roz", "har din", "alarm", "tarikh"]):
         # Extract time or frequency
