@@ -29,3 +29,34 @@ Traceback (most recent call last):
   File "main.py", line 259, in _watch_input_folder
     input_folder = Path(self.config.input_folder)
 AttributeError: 'Config' object has no attribute 'input_folder'
+2026-11-17 22:24:45,364 - WifeGod - INFO - ============================================================
+2026-11-17 22:24:45,364 - WifeGod - INFO - Initializing Wife God - Sovereign Local AI Agent
+2026-11-17 22:24:45,364 - WifeGod - INFO - ============================================================
+2026-11-17 22:24:45,378 - WifeGod.Database - INFO - Database initialized at data\wife_god.db
+2026-11-17 22:24:45,379 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:24:45,379 - WifeGod.Voice - INFO - Initializing VoiceCommunicator...
+2026-11-17 22:24:45,558 - comtypes.client._code_cache - INFO - Imported existing <module 'comtypes.gen' from 'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python38\\lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2026-11-17 22:24:45,559 - comtypes.client._code_cache - INFO - Using writeable comtypes cache directory: 'C:\Users\HP\AppData\Local\Programs\Python\Python38\lib\site-packages\comtypes\gen'
+2026-11-17 22:24:45,801 - WifeGod.Voice - INFO - TTS engine initialized
+2026-11-17 22:24:45,802 - WifeGod.Voice - WARNING - faster-whisper not available, STT disabled
+2026-11-17 22:24:45,802 - WifeGod.Voice - INFO - VoiceCommunicator initialized
+2026-11-17 22:24:45,803 - WifeGod.DocProcessor - INFO - Initializing DocProcessor...
+2026-11-17 22:24:45,809 - WifeGod.DocProcessor - WARNING - Tesseract not available: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-11-17 22:24:45,810 - WifeGod.DocProcessor - WARNING - No OCR engine available!
+2026-11-17 22:24:45,810 - WifeGod.DocProcessor - INFO - DocProcessor initialized
+2026-11-17 22:24:45,811 - WifeGod.CaptchaSolver - INFO - Initializing CaptchaSolver...
+2026-11-17 22:24:45,811 - WifeGod.CaptchaSolver - INFO - OpenCV captcha solver ready
+2026-11-17 22:24:45,811 - WifeGod.CaptchaSolver - INFO - CaptchaSolver initialized
+2026-11-17 22:24:45,812 - WifeGod.eMitraBot - INFO - Initializing eMitraBot...
+2026-11-17 22:24:48,684 - WifeGod.eMitraBot - INFO - eMitraBot initialized
+2026-11-17 22:24:48,696 - WifeGod.TwitterBot - INFO - Initializing TwitterBot...
+2026-11-17 22:24:50,767 - WifeGod.TwitterBot - INFO - TwitterBot initialized
+2026-11-17 22:24:50,770 - WifeGod - INFO - ============================================================
+2026-11-17 22:24:50,771 - WifeGod - INFO - Wife God fully initialized and ready!
+2026-11-17 22:24:50,772 - WifeGod - INFO - ============================================================
+2026-11-17 22:25:50,784 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:25:50,786 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:25:50,787 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:26:50,793 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:26:50,794 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:26:50,801 - WifeGod.Voice - ERROR - TTS error: run loop already started

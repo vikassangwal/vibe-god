@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>👑 DIGI MITRA - AI Super Agent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #090D16;
+            --card-bg: rgba(22, 27, 46, 0.7);
+            --primary: #38bdf8;
+            --accent: #818cf8;
+            --success: #34d399;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 60px; overflow-x: hidden; }
+        .glow { position: fixed; width: 400px; height: 400px; background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%); top: -100px; right: -100px; border-radius: 50%; pointer-events: none; }
+        .header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); }
+        .brand h1 { font-size: 1.4rem; font-weight: 700; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .status-badge { background: rgba(52, 211, 153, 0.15); color: var(--success); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+        
+        .container { max-width: 900px; margin: 0 auto; padding: 20px 15px; }
+        
+        .mobile-connect { background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(129, 140, 248, 0.1)); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 16px; padding: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .mobile-info h3 { font-size: 1rem; color: var(--primary); }
+        .mobile-info p { font-size: 0.85rem; color: var(--text-muted); }
+        .mobile-url-box { background: rgba(0,0,0,0.4); padding: 6px 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; color: #a5f3fc; border: 1px solid var(--border); }
+        
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .action-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(12px); }
+        .action-card:hover, .action-card:active { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.2); }
+        .action-icon { font-size: 1.8rem; margin-bottom: 8px; }
+        .action-title { font-size: 0.85rem; font-weight: 600; }
+
+        .chat-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 20px; backdrop-filter: blur(16px); margin-bottom: 20px; min-height: 280px; display: flex; flex-direction: column; }
+        .chat-history { flex: 1; overflow-y: auto; max-height: 350px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .msg { padding: 12px 16px; border-radius: 14px; max-width: 85%; line-height: 1.5; font-size: 0.95rem; }
+        .msg-user { align-self: flex-end; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border-bottom-right-radius: 2px; }
+        .msg-bot { align-self: flex-start; background: rgba(30, 41, 59, 0.8); border: 1px solid var(--border); border-bottom-left-radius: 2px; }
+        
+        .input-bar { display: flex; gap: 10px; position: relative; }
+        .input-bar input { flex: 1; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; color: white; font-size: 1rem; outline: none; }
+        .input-bar input:focus { border-color: var(--primary); }
+        .send-btn, .mic-btn { background: var(--primary); color: #090D16; border: none; border-radius: 12px; padding: 0 18px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .mic-btn { background: rgba(56, 189, 248, 0.2); color: var(--primary); border: 1px solid var(--border); }
+        .mic-btn.listening { background: #ef4444; color: white; animation: pulse 1s infinite; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 25px; }
+        .feature-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
+        .feature-box h4 { margin-bottom: 10px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .feature-box p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+    <div class="header">
+        <div class="brand">
+            <h1>👑 DIGI MITRA</h1>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Autonomous Sovereign AI Agent</span>
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span>100% LOCAL ACTIVE</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Mobile Connect Box -->
+        <div class="mobile-connect">
+            <div class="mobile-info">
+                <h3>📱 Mobile Se Control Karein</h3>
+                <p>Same Wi-Fi se connect karke apne phone ke browser mein kholiye:</p>
+            </div>
+            <div class="mobile-url-box">{{ mobile_url }}</div>
+        </div>
+
+        <!-- Quick 1-Click Action Buttons -->
+        <div class="quick-actions">
+            <div class="action-card" onclick="quickCommand('Nifty 50 trade analysis karo beginner se pro pattern draw')">
+                <div class="action-icon">📈</div>
+                <div class="action-title">Trade Analysis</div>
+            </div>
+            <div class="action-card" onclick="quickCommand('eMitra Jan Aadhaar aur Bonafide service fill')">
+                <div class="action-icon">🏛️</div>
+                <div class="action-title">eMitra Services</div>
+            </div>
+            <div class="action-card" onclick="quickCommand('Rajasthan APMC mandi live crop rates')">
+                <div class="action-icon">🌾</div>
+                <div class="action-title">Mandi Rates</div>
+            </div>
+            <div class="action-card" onclick="quickCommand('Auto video editing reels short create')">
+                <div class="action-icon">🎬</div>
+                <div class="action-title">Video Editing</div>
+            </div>
+            <div class="action-card" onclick="drawChartScreen()">
+                <div class="action-icon">✏️</div>
+                <div class="action-title">Screen Draw Chart</div>
+            </div>
+        </div>
+
+        <!-- Chat / Interaction Box -->
+        <div class="chat-section">
+            <div class="chat-history" id="chatHistory">
+                <div class="msg msg-bot">
+                    Namaste Vikas ji! Main <b>DIGI MITRA</b> hoon — aapka autonomous AI Super-Agent. Aap broken Hindi ya English mein kuch bhi bolein ya type karein, main sab online kaam execute kar dunga.
+                </div>
+            </div>
+
+            <div class="input-bar">
+                <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Bol kar command dein">🎤</button>
+                <input type="text" id="userInput" placeholder="Bol kar ya type karein (e.g. 'trede analisas kro', 'emitra form', 'vedio aditing')..." onkeydown="if(event.key === 'Enter') sendCommand()">
+                <button class="send-btn" onclick="sendCommand()">Bhejo</button>
+            </div>
+        </div>
+
+        <!-- Features Overview -->
+        <div class="features-grid">
+            <div class="feature-box">
+                <h4>📈 Trading Chart Analysis</h4>
+                <p>Beginner se Pro level tak Candlestick patterns, RSI, MACD detect karta hai aur screen par auto-draw karta hai.</p>
+            </div>
+            <div class="feature-box">
+                <h4>🧠 Self-Learning & Research</h4>
+                <p>Jo bhi naya topic bolenge, internet se khud research karke apne local dimag mein save kar leta hai bina paid API ke.</p>
+            </div>
+            <div class="feature-box">
+                <h4>🏛️ eMitra & Government Services</h4>
+                <p>Rajasthan SSO & eMitra forms auto-fill, automated Captcha bypass aur documents compressor built-in hai.</p>
+            </div>
+            <div class="feature-box">
+                <h4>📱 Mobile + PC Sync</h4>
+                <p>Aapke phone aur laptop dono par bina kisi installation ke seedha browser mein PWA app ki tarah chalta hai.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatHistory = document.getElementById('chatHistory');
+        const userInput = document.getElementById('userInput');
+        const micBtn = document.getElementById('micBtn');
+
+        function appendMessage(text, isUser = false) {
+            const div = document.createElement('div');
+            div.className = 'msg ' + (isUser ? 'msg-user' : 'msg-bot');
+            div.innerHTML = text.replace(/\n/g, '<br>');
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        async function sendCommand() {
+            const query = userInput.value.trim();
+            if (!query) return;
+
+            appendMessage(query, true);
+            userInput.value = '';
+
+            const botThinking = document.createElement('div');
+            botThinking.className = 'msg msg-bot';
+            botThinking.innerText = '⏳ Digi Mitra kaam kar raha hai...';
+            chatHistory.appendChild(botThinking);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            try {
+                const formData = new FormData();
+                formData.append('query', query);
+                const resp = await fetch('/api/ask', { method: 'POST', body: formData });
+                const data = await resp.json();
+                botThinking.remove();
+                appendMessage(data.reply || 'Task complete ho gaya!');
+            } catch (err) {
+                botThinking.remove();
+                appendMessage('⚠️ Error: ' + err.message);
+            }
+        }
+
+        function quickCommand(cmd) {
+            userInput.value = cmd;
+            sendCommand();
+        }
+
+        async function drawChartScreen() {
+            appendMessage('Screen par Candlestick & Trendline draw kiya ja raha hai...', true);
+            try {
+                const resp = await fetch('/api/draw_chart', { method: 'POST' });
+                const data = await resp.json();
+                appendMessage(data.message || 'Chart pattern screen par draw ho gaya!');
+            } catch(e) {
+                appendMessage('Screen control error: ' + e.message);
+            }
+        }
+
+        // Voice Recognition (Speech to Text)
+        let recognition = null;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRec();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'hi-IN';
+
+            recognition.onresult = (event) => {
+                const text = event.results[0][0].transcript;
+                userInput.value = text;
+                micBtn.classList.remove('listening');
+                sendCommand();
+            };
+
+            recognition.onerror = () => { micBtn.classList.remove('listening'); };
+            recognition.onend = () => { micBtn.classList.remove('listening'); };
+        }
+
+        function toggleVoice() {
+            if (!recognition) {
+                alert('Aapke browser mein mic recognition supported nahi hai. Kripya type karein.');
+                return;
+            }
+            try {
+                micBtn.classList.add('listening');
+                recognition.start();
+            } catch (e) {
+                recognition.stop();
+                micBtn.classList.remove('listening');
+            }
+        }
+    </script>
+</body>
+</html>
