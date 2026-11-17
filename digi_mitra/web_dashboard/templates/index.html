@@ -106,6 +106,25 @@
 
         <input type="file" id="docUploadInput" accept="image/*,application/pdf" style="display:none;" onchange="handleFileUpload(event)">
 
+        <!-- Form Review & OTP Interactive Banner (Hidden by default, shows when needed) -->
+        <div id="otpBox" style="display:none; background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(249, 115, 22, 0.2)); border: 1px solid #f97316; border-radius: 14px; padding: 15px; margin-bottom: 15px;">
+            <h4 style="color: #fb923c; margin-bottom: 6px;">🔐 Portal OTP Required</h4>
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;">eMitra / SSO Portal ne aapke mobile par OTP bheja hai. Yahan OTP daalein:</p>
+            <div style="display:flex; gap: 8px;">
+                <input type="text" id="otpInput" placeholder="6-Digit OTP" style="width: 140px; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: rgba(0,0,0,0.5); color:white; font-size:1.1rem; text-align:center;">
+                <button onclick="submitOTP()" style="background: #f97316; color: white; border: none; border-radius: 8px; padding: 0 16px; font-weight: 700; cursor: pointer;">Submit OTP</button>
+            </div>
+        </div>
+
+        <div id="reviewBox" style="display:none; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(52, 211, 153, 0.2)); border: 1px solid var(--primary); border-radius: 14px; padding: 15px; margin-bottom: 15px;">
+            <h4 style="color: var(--primary); margin-bottom: 6px;">📋 Form Review & Verification</h4>
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px;" id="reviewText">Kripya bhari hui details check karein. Kya sab sahi hai?</p>
+            <div style="display:flex; gap: 10px;">
+                <button onclick="submitReview('approve')" style="background: var(--success); color: #090D16; border: none; border-radius: 8px; padding: 8px 18px; font-weight: 700; cursor: pointer;">✓ Sahi Hai, Submit Karo</button>
+                <button onclick="submitReview('reject')" style="background: rgba(239, 68, 68, 0.3); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 8px; padding: 8px 18px; font-weight: 700; cursor: pointer;">✗ Cancel Karo</button>
+            </div>
+        </div>
+
         <!-- Chat / Interaction Box -->
         <div class="chat-section">
             <div class="chat-history" id="chatHistory">
@@ -212,6 +231,34 @@
                 }
             } catch (err) {
                 appendMessage('⚠️ Upload error: ' + err.message);
+            }
+        }
+
+        async function submitOTP() {
+            const otp = document.getElementById('otpInput').value.trim();
+            if (!otp) return;
+            const formData = new FormData();
+            formData.append('otp_code', otp);
+            try {
+                const resp = await fetch('/api/form/submit_otp', { method: 'POST', body: formData });
+                const res = await resp.json();
+                document.getElementById('otpBox').style.display = 'none';
+                appendMessage(`🔐 ${res.message}`);
+            } catch(e) {
+                appendMessage('OTP submit error: ' + e.message);
+            }
+        }
+
+        async function submitReview(action) {
+            const formData = new FormData();
+            formData.append('action', action);
+            try {
+                const resp = await fetch('/api/form/submit_review', { method: 'POST', body: formData });
+                const res = await resp.json();
+                document.getElementById('reviewBox').style.display = 'none';
+                appendMessage(res.message);
+            } catch(e) {
+                appendMessage('Review submit error: ' + e.message);
             }
         }
 

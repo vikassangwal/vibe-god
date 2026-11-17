@@ -148,6 +148,41 @@ async def upload_and_process_document(file: UploadFile = File(...), doc_type: st
         return JSONResponse({"success": False, "error": str(e)})
 
 
+# State store for pending verification and OTP
+pending_form_verification = {
+    "active": False,
+    "service_name": "",
+    "data": {},
+    "status": "idle" # "waiting_user_review", "waiting_otp", "approved", "submitted"
+}
+
+
+@app.get("/api/form/pending")
+async def get_pending_form():
+    """Check if any form is waiting for user review or OTP"""
+    return JSONResponse(pending_form_verification)
+
+
+@app.post("/api/form/submit_review")
+async def submit_form_review(action: str = Form(...)): # "approve" or "reject"
+    if action == "approve":
+        pending_form_verification["status"] = "approved"
+        return JSONResponse({"success": True, "message": "Form verify ho gaya! Ab portal par final submit kiya ja raha hai."})
+    else:
+        pending_form_verification["status"] = "rejected"
+        return JSONResponse({"success": True, "message": "Form submission cancel kar diya gaya."})
+
+
+@app.post("/api/form/submit_otp")
+async def submit_otp(otp_code: str = Form(...)):
+    """User submits OTP received on their mobile phone"""
+    if pending_form_verification["active"]:
+        pending_form_verification["status"] = "otp_received"
+        pending_form_verification["otp"] = otp_code
+        return JSONResponse({"success": True, "message": f"OTP {otp_code} verify karke portal par submit kiya gaya!"})
+    return JSONResponse({"success": False, "message": "Koi active OTP request nahi hai."})
+
+
 @app.get("/api/status")
 async def get_system_status():
     import psutil
