@@ -42,6 +42,7 @@ from digi_mitra.relentless_worker import RelentlessTargetWorker
 from digi_mitra.universal_online_worker import UniversalOnlineWorkEngine
 from digi_mitra.freelance_engine import FreelanceExecutionEngine
 from digi_mitra.wise_mentor import WiseMentorGuardian
+from digi_mitra.job_scanner import JobVacancyScannerEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -70,6 +71,7 @@ relentless_worker = RelentlessTargetWorker()
 online_worker = UniversalOnlineWorkEngine()
 freelance_engine = FreelanceExecutionEngine()
 wise_mentor = WiseMentorGuardian()
+job_scanner = JobVacancyScannerEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -175,6 +177,19 @@ async def process_user_command(query: str = Form(...)):
     elif any(k in query.lower() for k in ["freelanc", "frilac", "fiverr", "upwork", "proposal", "bid"]):
         prop_res = freelance_engine.generate_winning_proposal(job_title=query)
         result["reply"] = f"💻 <b>Freelance Winning Proposal (Bid) Tayyar Hai:</b><br><br><pre style='background:rgba(0,0,0,0.4); padding:10px; border-radius:8px; white-space:pre-wrap; color:#a5f3fc;'>{prop_res['proposal']}</pre><br>👉 <i>{prop_res['tip']}</i><br>Client order milte hi Digi Mitra final delivery file khud create karke deliver kar dega!"
+
+    elif any(k in query.lower() for k in ["job", "naukri", "vacancy", "bharti", "post", "recruitment"]):
+        job_res = job_scanner.scan_jobs()
+        sarkari_html = []
+        for sj in job_res["sarkari_jobs"]:
+            sarkari_html.append(f"<b>🏛️ {sj['title']}</b> ({sj['department']})<br>🎓 <i>Yogyata:</i> {sj['eligibility']} | 📅 <i>Last Date:</i> {sj['last_date']}<br>💰 <i>Fees:</i> {sj['fee']}")
+
+        private_html = []
+        for pj in job_res["private_remote_jobs"]:
+            private_html.append(f"<b>💼 {pj['title']}</b> ({pj['company']})<br>💵 <i>Salary:</i> {pj['salary']} | 📍 <i>Type:</i> {pj['type']}")
+
+        all_jobs_str = "<br><br>".join(sarkari_html) + "<br><br>" + "<br><br>".join(private_html)
+        result["reply"] = f"📢 <b>Digi Mitra Live Jobs & Vacancy Radar:</b><br><br>{all_jobs_str}<br><br>👉 <i>{job_res['direct_action']}</i>"
 
     elif any(k in query.lower() for k in ["online kam", "onlin kam", "freelance", "online work", "koi bhi kam"]):
         online_res = online_worker.execute_online_task(query)
