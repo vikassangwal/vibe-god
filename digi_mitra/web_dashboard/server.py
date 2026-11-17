@@ -29,6 +29,7 @@ from digi_mitra.video.video_engine import VideoAutomationEngine
 from digi_mitra.exam_engine import ExamPaperGenerator
 from digi_mitra.app_permissions import AppPermissionManager
 from digi_mitra.legal_etiquette import LegalKnowledgeAndEtiquetteEngine
+from digi_mitra.security_auditor import SecurityAuditorEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -44,6 +45,7 @@ doc_processor = DocProcessor(DocConfig())
 exam_engine = ExamPaperGenerator()
 permission_mgr = AppPermissionManager()
 legal_engine = LegalKnowledgeAndEtiquetteEngine()
+security_auditor = SecurityAuditorEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -116,6 +118,12 @@ async def process_user_command(query: str = Form(...)):
         res_data = await research_engine.autonomous_research(query)
         d = res_data.get("data", {})
         result["reply"] = f"🧠 Research Complete ({d.get('topic')}):\n{d.get('summary')}"
+
+    elif "hack" in query.lower() or "security" in query.lower() or "suraksha" in query.lower() or "audit" in query.lower():
+        audit_res = security_auditor.check_local_security_posture()
+        services_str = "<br>• ".join(audit_res["active_local_services"]) if audit_res["active_local_services"] else "Sabhi private ports surakshit hain."
+        recom_str = "<br>• ".join(audit_res["recommendations"])
+        result["reply"] = f"🛡️ <b>Ethical Cyber Security & Vulnerability Audit Report</b>:<br><b>Active Local Services:</b><br>• {services_str}<br><br><b>Suraksha Salah (Defensive Measures):</b><br>• {recom_str}<br><br><b>Status:</b> {audit_res['status']}"
 
     elif intent == "mandi_farming":
         result["reply"] = f"🌾 Mandi Bhav & e-NAM: '{query}' live rates updated from Rajasthan APMC mandis."
