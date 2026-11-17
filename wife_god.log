@@ -60,3 +60,87 @@ AttributeError: 'Config' object has no attribute 'input_folder'
 2026-11-17 22:26:50,793 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
 2026-11-17 22:26:50,794 - WifeGod - WARNING - Ollama health check failed
 2026-11-17 22:26:50,801 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:27:50,808 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:27:50,809 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:27:50,812 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:28:50,819 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:28:50,819 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:28:50,822 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:29:50,838 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:29:50,838 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:29:50,857 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:30:50,866 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:30:50,867 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:30:50,876 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:31:50,900 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:31:50,900 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:31:50,907 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:32:50,918 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:32:50,919 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:32:50,925 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:33:50,933 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:33:50,934 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:33:50,943 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:34:50,953 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:34:50,954 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:34:50,960 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:35:50,966 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:35:50,966 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:35:50,971 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:36:50,984 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:36:50,984 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:36:50,989 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:37:50,996 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:37:50,997 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:37:51,006 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:38:51,012 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:38:51,012 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:38:51,016 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:39:51,039 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:39:51,039 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:39:51,042 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:40:51,051 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:40:51,051 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:40:51,055 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:41:51,070 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:41:51,071 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:41:51,075 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:42:51,071 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:42:51,071 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:42:51,074 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:43:51,078 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:43:51,078 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:43:51,086 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:44:51,095 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:44:51,095 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:44:51,098 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:45:51,105 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:45:51,105 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:45:51,108 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:46:51,131 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:46:51,132 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:46:51,135 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:47:51,127 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:47:51,128 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:47:51,132 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:48:51,130 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:48:51,130 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:48:51,133 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:49:51,151 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:49:51,156 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:49:51,160 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:50:51,173 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:50:51,174 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:50:51,176 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:51:51,218 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:51:51,269 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:51:51,282 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:52:51,325 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:52:51,325 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:52:51,328 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:53:51,354 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:53:51,355 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:53:51,358 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:54:51,382 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:54:51,383 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:54:51,387 - WifeGod.Voice - ERROR - TTS error: run loop already started

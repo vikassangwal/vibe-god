@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
@@ -113,8 +113,15 @@
             </div>
 
             <div class="input-bar">
+                <select id="langSelect" onchange="setLanguage(this.value)" style="background: rgba(15, 23, 42, 0.8); color: #38bdf8; border: 1px solid var(--border); border-radius: 10px; padding: 0 8px; font-weight: 600; font-size: 0.85rem; outline: none; cursor: pointer;">
+                    <option value="hi-IN" selected>🇮🇳 Hindi / Marwari</option>
+                    <option value="en-IN">🇬🇧 Hinglish / English</option>
+                    <option value="pa-IN">🇮🇳 Punjabi</option>
+                    <option value="bn-IN">🇮🇳 Bengali</option>
+                    <option value="gu-IN">🇮🇳 Gujarati</option>
+                </select>
                 <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Bol kar command dein">🎤</button>
-                <input type="text" id="userInput" placeholder="Bol kar ya type karein (e.g. 'trede analisas kro', 'emitra form', 'vedio aditing')..." onkeydown="if(event.key === 'Enter') sendCommand()">
+                <input type="text" id="userInput" placeholder="Kisi bhi bhasha mein bolein ya type karein (Hindi, Marwari, English)..." onkeydown="if(event.key === 'Enter') sendCommand()">
                 <button class="send-btn" onclick="sendCommand()">Bhejo</button>
             </div>
         </div>
@@ -195,14 +202,16 @@
             }
         }
 
-        // Voice Recognition (Speech to Text)
+        // Voice Recognition (Any Language Support)
         let recognition = null;
+        let activeLang = 'hi-IN'; // default Hindi, supports Marwari, English, Mix
+
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRec();
             recognition.continuous = false;
             recognition.interimResults = false;
-            recognition.lang = 'hi-IN';
+            recognition.lang = activeLang;
 
             recognition.onresult = (event) => {
                 const text = event.results[0][0].transcript;
@@ -213,6 +222,13 @@
 
             recognition.onerror = () => { micBtn.classList.remove('listening'); };
             recognition.onend = () => { micBtn.classList.remove('listening'); };
+        }
+
+        function setLanguage(lang) {
+            activeLang = lang;
+            if (recognition) {
+                recognition.lang = lang;
+            }
         }
 
         function toggleVoice() {
