@@ -40,6 +40,7 @@ from digi_mitra.client_guardian import ClientAcquisitionGuardianEngine
 from digi_mitra.target_one_lakh import OneLakhTargetPlanner
 from digi_mitra.relentless_worker import RelentlessTargetWorker
 from digi_mitra.universal_online_worker import UniversalOnlineWorkEngine
+from digi_mitra.freelance_engine import FreelanceExecutionEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -66,6 +67,7 @@ client_guardian = ClientAcquisitionGuardianEngine()
 one_lakh_planner = OneLakhTargetPlanner()
 relentless_worker = RelentlessTargetWorker()
 online_worker = UniversalOnlineWorkEngine()
+freelance_engine = FreelanceExecutionEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -162,6 +164,10 @@ async def process_user_command(query: str = Form(...)):
             result["launch_url"] = launch_data["scheme_url"]
         else:
             result["reply"] = f"{launch_data['alert']}<br><small style='color:#f87171;'>{launch_data['instruction']}</small>"
+
+    elif any(k in query.lower() for k in ["freelanc", "frilac", "fiverr", "upwork", "proposal", "bid"]):
+        prop_res = freelance_engine.generate_winning_proposal(job_title=query)
+        result["reply"] = f"💻 <b>Freelance Winning Proposal (Bid) Tayyar Hai:</b><br><br><pre style='background:rgba(0,0,0,0.4); padding:10px; border-radius:8px; white-space:pre-wrap; color:#a5f3fc;'>{prop_res['proposal']}</pre><br>👉 <i>{prop_res['tip']}</i><br>Client order milte hi Digi Mitra final delivery file khud create karke deliver kar dega!"
 
     elif any(k in query.lower() for k in ["online kam", "onlin kam", "freelance", "online work", "koi bhi kam"]):
         online_res = online_worker.execute_online_task(query)
