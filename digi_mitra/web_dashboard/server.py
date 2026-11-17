@@ -36,6 +36,7 @@ from digi_mitra.history_learner import HistoryLearningEngine
 from digi_mitra.human_chat import NaturalHumanChatEngine
 from digi_mitra.mobile_launcher import MobileAppLauncherEngine
 from digi_mitra.wealth_engine import AutonomousWealthEngine
+from digi_mitra.client_guardian import ClientAcquisitionGuardianEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -58,6 +59,7 @@ human_chat = NaturalHumanChatEngine()
 history_learner = HistoryLearningEngine()
 mobile_launcher = MobileAppLauncherEngine(permission_mgr)
 wealth_engine = AutonomousWealthEngine()
+client_guardian = ClientAcquisitionGuardianEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -154,6 +156,14 @@ async def process_user_command(query: str = Form(...)):
             result["launch_url"] = launch_data["scheme_url"]
         else:
             result["reply"] = f"{launch_data['alert']}<br><small style='color:#f87171;'>{launch_data['instruction']}</small>"
+
+    elif any(k in query.lower() for k in ["client", "clint", "grahak", "customer", "order"]):
+        client_res = client_guardian.find_potential_clients()
+        strat_html = []
+        for st in client_res["strategies"]:
+            strat_html.append(f"<b>{st['category']}</b><br>🎯 <i>Target:</i> {st['potential_clients']}<br>💬 <i>Kaise layega:</i> {st['approach']}<br>💸 <i>Kharcha:</i> <b>{st['cost']}</b>")
+        strat_str = "<br><br>".join(strat_html)
+        result["reply"] = f"🎯 <b>Digi Mitra Client Acquisition System (Zero Kharcha):</b><br><br>{strat_str}<br><br><small style='color:#34d399;'>{client_res['privacy_assurance']}</small>"
 
     elif any(k in query.lower() for k in ["paise", "pese", "kamao", "earning", "kamana", "income", "wealth", "rupaye"]):
         wealth_data = wealth_engine.analyze_earning_opportunities()
