@@ -27,6 +27,7 @@ from digi_mitra.trading.trading_engine import TradingAnalysisEngine
 from digi_mitra.research.research_engine import SelfLearningResearchEngine
 from digi_mitra.video.video_engine import VideoAutomationEngine
 from digi_mitra.exam_engine import ExamPaperGenerator
+from digi_mitra.app_permissions import AppPermissionManager
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -40,6 +41,7 @@ research_engine = SelfLearningResearchEngine()
 video_engine = VideoAutomationEngine()
 doc_processor = DocProcessor(DocConfig())
 exam_engine = ExamPaperGenerator()
+permission_mgr = AppPermissionManager()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -194,6 +196,20 @@ async def submit_otp(otp_code: str = Form(...)):
         pending_form_verification["otp"] = otp_code
         return JSONResponse({"success": True, "message": f"OTP {otp_code} verify karke portal par submit kiya gaya!"})
     return JSONResponse({"success": False, "message": "Koi active OTP request nahi hai."})
+
+
+@app.get("/api/permissions")
+async def get_permissions():
+    """Get list of all apps and their permission status"""
+    return JSONResponse(permission_mgr.get_all_permissions())
+
+
+@app.post("/api/permissions/toggle")
+async def toggle_app_permission(app_name: str = Form(...), allow: bool = Form(...)):
+    """Allow or block access to an app"""
+    permission_mgr.set_permission(app_name, allow)
+    status_text = "Allowed" if allow else "Blocked"
+    return JSONResponse({"success": True, "message": f"{app_name.capitalize()} ko access {status_text} kar diya gaya hai."})
 
 
 @app.get("/api/status")
