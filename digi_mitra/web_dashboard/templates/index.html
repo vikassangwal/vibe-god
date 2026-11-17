@@ -94,15 +94,17 @@
                 <div class="action-icon">🌾</div>
                 <div class="action-title">Mandi Rates</div>
             </div>
-            <div class="action-card" onclick="quickCommand('Auto video editing reels short create')">
-                <div class="action-icon">🎬</div>
-                <div class="action-title">Video Editing</div>
+            <div class="action-card" onclick="document.getElementById('docUploadInput').click()">
+                <div class="action-icon">📸</div>
+                <div class="action-title">Upload & Resize Doc</div>
             </div>
             <div class="action-card" onclick="drawChartScreen()">
                 <div class="action-icon">✏️</div>
                 <div class="action-title">Screen Draw Chart</div>
             </div>
         </div>
+
+        <input type="file" id="docUploadInput" accept="image/*,application/pdf" style="display:none;" onchange="handleFileUpload(event)">
 
         <!-- Chat / Interaction Box -->
         <div class="chat-section">
@@ -189,6 +191,28 @@
         function quickCommand(cmd) {
             userInput.value = cmd;
             sendCommand();
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            appendMessage(`📤 Uploading Document: ${file.name}...`, true);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('doc_type', 'general');
+
+            try {
+                const resp = await fetch('/api/upload_doc', { method: 'POST', body: formData });
+                const res = await resp.json();
+                if (res.success) {
+                    appendMessage(`✅ <b>Document Tayyar!</b><br>📁 Name: ${res.filename}<br>⚖️ Size: ${res.original_size_kb} KB ➔ <b>${res.compressed_size_kb} KB</b> (eMitra format me compress ho gaya)<br>📜 <b>Extracted Text:</b> ${res.ocr_text}`);
+                } else {
+                    appendMessage('⚠️ Error: ' + res.error);
+                }
+            } catch (err) {
+                appendMessage('⚠️ Upload error: ' + err.message);
+            }
         }
 
         async function drawChartScreen() {

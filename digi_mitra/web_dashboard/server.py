@@ -1,4 +1,4 @@
-﻿"""
+"""
 Digi Mitra Local Private API & Web Control Panel
 Runs on FastAPI + WebSockets + Responsive Glassmorphism PWA UI.
 Accessible via:
@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 import uvicorn
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -26,6 +26,7 @@ from digi_mitra.nlu.smart_nlu import SmartNLU
 from digi_mitra.trading.trading_engine import TradingAnalysisEngine
 from digi_mitra.research.research_engine import SelfLearningResearchEngine
 from digi_mitra.video.video_engine import VideoAutomationEngine
+from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
 
@@ -36,6 +37,7 @@ nlu = SmartNLU()
 trading_engine = TradingAnalysisEngine()
 research_engine = SelfLearningResearchEngine()
 video_engine = VideoAutomationEngine()
+doc_processor = DocProcessor(DocConfig())
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -113,6 +115,37 @@ async def process_user_command(query: str = Form(...)):
 async def draw_chart_pattern():
     res = await trading_engine.draw_on_chart_screen()
     return JSONResponse(res)
+
+
+@app.post("/api/upload_doc")
+async def upload_and_process_document(file: UploadFile = File(...), doc_type: str = Form("general")):
+    """
+    Direct Mobile/Web document upload:
+    - Auto OCR text extraction from photo
+    - Auto resize and compress to eMitra rules (50KB / 100KB / 200KB)
+    """
+    try:
+        temp_dir = Path("./input_documents")
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        file_path = temp_dir / file.filename
+
+        with open(file_path, "wb") as buffer:
+            content = await file.read()
+            buffer.write(content)
+
+        processed = await doc_processor.process_document(str(file_path), doc_type_hint=doc_type)
+
+        return JSONResponse({
+            "success": True,
+            "filename": file.filename,
+            "doc_type": processed.doc_type.value,
+            "original_size_kb": round(len(content) / 1024, 1),
+            "compressed_size_kb": round(processed.size_kb, 1),
+            "ocr_text": processed.ocr_text[:300] if processed.ocr_text else "Text auto-extracted",
+            "message": f"Document processed & resized to {round(processed.size_kb, 1)} KB (eMitra format ready)"
+        })
+    except Exception as e:
+        return JSONResponse({"success": False, "error": str(e)})
 
 
 @app.get("/api/status")

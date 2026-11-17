@@ -144,3 +144,12 @@ AttributeError: 'Config' object has no attribute 'input_folder'
 2026-11-17 22:54:51,382 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
 2026-11-17 22:54:51,383 - WifeGod - WARNING - Ollama health check failed
 2026-11-17 22:54:51,387 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:55:51,401 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:55:51,402 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:55:51,404 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:56:51,422 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:56:51,423 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:56:51,426 - WifeGod.Voice - ERROR - TTS error: run loop already started
+2026-11-17 22:57:51,437 - WifeGod.LLM - WARNING - Ollama health check failed: 'NoneType' object has no attribute 'get'
+2026-11-17 22:57:51,437 - WifeGod - WARNING - Ollama health check failed
+2026-11-17 22:57:51,442 - WifeGod.Voice - ERROR - TTS error: run loop already started
