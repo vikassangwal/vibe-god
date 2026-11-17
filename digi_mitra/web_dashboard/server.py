@@ -32,6 +32,7 @@ from digi_mitra.legal_etiquette import LegalKnowledgeAndEtiquetteEngine
 from digi_mitra.security_auditor import SecurityAuditorEngine
 from digi_mitra.scheduler_engine import TaskSchedulerEngine
 from digi_mitra.chat_brain import ConversationalBrain
+from digi_mitra.history_learner import HistoryLearningEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -50,6 +51,7 @@ legal_engine = LegalKnowledgeAndEtiquetteEngine()
 security_auditor = SecurityAuditorEngine()
 task_scheduler = TaskSchedulerEngine()
 chat_brain = ConversationalBrain()
+history_learner = HistoryLearningEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -163,7 +165,8 @@ async def process_user_command(query: str = Form(...)):
     clean_reply = legal_engine.format_respectful_response(result["reply"])
     if compliance.get("legal_note") and intent in ["trading_analysis", "emitra_service"]:
         clean_reply += f"\n\n<small style='color:#94a3b8;'>{compliance['legal_note']}</small>"
-    result["reply"] = clean_reply
+    # Save interaction into lifelong memory & learn from it
+    history_learner.record_interaction(query, clean_reply, intent)
 
     return JSONResponse(result)
 
