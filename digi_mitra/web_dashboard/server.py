@@ -39,6 +39,7 @@ from digi_mitra.wealth_engine import AutonomousWealthEngine
 from digi_mitra.client_guardian import ClientAcquisitionGuardianEngine
 from digi_mitra.target_one_lakh import OneLakhTargetPlanner
 from digi_mitra.relentless_worker import RelentlessTargetWorker
+from digi_mitra.universal_online_worker import UniversalOnlineWorkEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -64,6 +65,7 @@ wealth_engine = AutonomousWealthEngine()
 client_guardian = ClientAcquisitionGuardianEngine()
 one_lakh_planner = OneLakhTargetPlanner()
 relentless_worker = RelentlessTargetWorker()
+online_worker = UniversalOnlineWorkEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -160,6 +162,11 @@ async def process_user_command(query: str = Form(...)):
             result["launch_url"] = launch_data["scheme_url"]
         else:
             result["reply"] = f"{launch_data['alert']}<br><small style='color:#f87171;'>{launch_data['instruction']}</small>"
+
+    elif any(k in query.lower() for k in ["online kam", "onlin kam", "freelance", "online work", "koi bhi kam"]):
+        online_res = online_worker.execute_online_task(query)
+        jobs_str = "<br>• ".join(online_worker.supported_online_jobs)
+        result["reply"] = f"{online_res['message']}<br><br>💼 <b>Digi Mitra Jin Sabhi Online Kamon Ko Karta Hai:</b><br>• {jobs_str}"
 
     elif any(k in query.lower() for k in ["client", "clint", "grahak", "customer", "order"]):
         client_res = client_guardian.find_potential_clients()
