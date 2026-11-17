@@ -26,6 +26,7 @@ from digi_mitra.nlu.smart_nlu import SmartNLU
 from digi_mitra.trading.trading_engine import TradingAnalysisEngine
 from digi_mitra.research.research_engine import SelfLearningResearchEngine
 from digi_mitra.video.video_engine import VideoAutomationEngine
+from digi_mitra.exam_engine import ExamPaperGenerator
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -38,6 +39,7 @@ trading_engine = TradingAnalysisEngine()
 research_engine = SelfLearningResearchEngine()
 video_engine = VideoAutomationEngine()
 doc_processor = DocProcessor(DocConfig())
+exam_engine = ExamPaperGenerator()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -94,6 +96,17 @@ async def process_user_command(query: str = Form(...)):
 
     elif intent == "video_edit":
         result["reply"] = f"🎬 Video Automation active: '{query}'. Reels generation and video processing module ready."
+
+    elif "papar" in query.lower() or "paper" in query.lower() or "question" in query.lower() or "blueprint" in query.lower():
+        # User requested question paper from books & blueprint
+        marks = 50
+        import re
+        marks_match = re.search(r'(\d+)\s*(number|no|mark|marks)', query.lower())
+        if marks_match:
+            marks = int(marks_match.group(1))
+
+        paper_res = exam_engine.generate_question_paper(subject="General Subject", total_marks=marks)
+        result["reply"] = f"📝 <b>Question Paper Safaltapoorvak Ban Gaya!</b><br>🎯 Total Marks: {marks}<br>📑 Blueprint Followed: Section A (MCQs 1M), Section B (Short 2M), Section C (Long 5M)<br>📁 PDF File: {paper_res['filename']} (Download ready)"
 
     elif intent == "research":
         res_data = await research_engine.autonomous_research(query)
