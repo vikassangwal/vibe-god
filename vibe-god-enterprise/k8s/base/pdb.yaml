@@ -1,0 +1,83 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: vibe-god-api-pdb
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: api
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vibe-god
+      app.kubernetes.io/component: api
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: vibe-god-worker-pdb
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: worker
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vibe-god
+      app.kubernetes.io/component: worker
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: vibe-god-scheduler-pdb
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: scheduler
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vibe-god
+      app.kubernetes.io/component: scheduler
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: postgresql-pdb
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: postgresql
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgresql
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redis-pdb
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: redis
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rabbitmq-pdb
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: rabbitmq
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rabbitmq

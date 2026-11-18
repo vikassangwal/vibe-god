@@ -1,0 +1,181 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vibe-god-api
+  namespace: vibe-god-monitoring
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: api
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vibe-god
+      app.kubernetes.io/component: api
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scheme: http
+      tlsConfig:
+        insecureSkipVerify: true
+    - port: http
+      path: /health
+      interval: 60s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - vibe-god
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vibe-god-worker
+  namespace: vibe-god-monitoring
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: worker
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vibe-god
+      app.kubernetes.io/component: worker
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - vibe-god
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vibe-god-scheduler
+  namespace: vibe-god-monitoring
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: scheduler
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vibe-god
+      app.kubernetes.io/component: scheduler
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - vibe-god
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vibe-god-ollama
+  namespace: vibe-god-monitoring
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: ollama
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vibe-god
+      app.kubernetes.io/component: ollama
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - vibe-god
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vibe-god-postgresql
+  namespace: vibe-god-monitoring
+  labels:
+    app.kubernetes.io/name: postgresql
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgresql
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - vibe-god
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vibe-god-redis
+  namespace: vibe-god-monitoring
+  labels:
+    app.kubernetes.io/name: redis
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - vibe-god
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vibe-god-rabbitmq
+  namespace: vibe-god-monitoring
+  labels:
+    app.kubernetes.io/name: rabbitmq
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rabbitmq
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - vibe-god
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vibe-god-kafka
+  namespace: vibe-god-monitoring
+  labels:
+    app.kubernetes.io/name: kafka
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scheme: http
+  namespaceSelector:
+    matchNames:
+      - vibe-god

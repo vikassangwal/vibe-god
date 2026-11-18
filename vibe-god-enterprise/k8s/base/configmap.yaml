@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vibe-god-config
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: config
+data:
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "INFO"
+  LOG_FORMAT: "json"
+  OTLP_ENDPOINT: "http://jaeger-collector.observability:4317"
+  OLLAMA_URL: "http://ollama.vibe-god:11434"
+  WORKER_CONCURRENCY: "8"
+  API_WORKERS: "4"
+  DB_POOL_SIZE: "20"
+  DB_MAX_OVERFLOW: "40"
+  REDIS_MAX_CONNECTIONS: "100"
+  RABBITMQ_PREFETCH: "10"
+  KAFKA_CONSUMER_GROUP: "vibe-god"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vibe-god-nginx-config
+  namespace: vibe-god
+data:
+  nginx.conf: |
+    events {
+        worker_connections 1024;
+    }
+    http {
+        upstream api_backend {
+            least_conn;
+            server vibe-god-api:8000;
+            keepalive 32;
+        }
+
+        server {
+            listen 80;
+            server_name api.vibe-god.example.com;
+
+            # Rate limiting
+            limit_req_zone $binary_remote_addr zone=api:10m rate=100r/s;
+            limit_req zone=api burst=200 nodelay;
+
+            # Security headers
+            add_header X-Frame-Options DENY;
+            add_header X-Content-Type-Options nosniff;
+            add_header X-XSS-Protection "1; mode=block";
+            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+            # Buffer sizes for large uploads
+            client_max_body_size 50M;
+            client_body_buffer_size 128k;
+
+            # Timeouts
+            proxy_connect_timeout 60s;
+            proxy_send_timeout 300s;
+            proxy_read_timeout 300s;
+
+            location / {
+                proxy_pass http://api_backend;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_cache_bypass $http_upgrade;
+            }
+
+            location /health {
+                proxy_pass http://api_backend;
+                access_log off;
+            }
+
+            location /metrics {
+                proxy_pass http://api_backend;
+                allow 10.0.0.0/8;
+                allow 172.16.0.0/12;
+                allow 192.168.0.0/16;
+                deny all;
+            }
+        }
+    }

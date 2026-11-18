@@ -1,0 +1,12 @@
+{
+  "active_wake_word": "digi mitra",
+  "supported_aliases": [
+    "hey digi",
+    "suno mitra",
+    "namaste mitra",
+    "digi",
+    "bhai"
+  ],
+  "enabled": true,
+  "sensitivity": 0.8
+}

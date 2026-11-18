@@ -1,0 +1,12 @@
+{
+  "chrome": true,
+  "tradingview": true,
+  "zerodha": false,
+  "groww": false,
+  "emitra": true,
+  "calculator": true,
+  "notepad": true,
+  "whatsapp": false,
+  "gallery": false,
+  "system_settings": false
+}

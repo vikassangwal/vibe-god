@@ -1,0 +1,95 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vibe-god-operator
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: operator
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets", "daemonsets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses", "networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["policy"]
+    resources: ["poddisruptionbudgets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vibe-god-operator
+  labels:
+    app.kubernetes.io/name: vibe-god
+subjects:
+  - kind: ServiceAccount
+    name: vibe-god-operator
+    namespace: vibe-god-system
+roleRef:
+  kind: ClusterRole
+  name: vibe-god-operator
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vibe-god-api
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: vibe-god
+    app.kubernetes.io/component: api
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+    resourceNames: ["vibe-god-api-*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vibe-god-api
+  namespace: vibe-god
+  labels:
+    app.kubernetes.io/name: vibe-god
+subjects:
+  - kind: ServiceAccount
+    name: vibe-god-api
+    namespace: vibe-god
+roleRef:
+  kind: Role
+  name: vibe-god-api
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vibe-god-worker
+  namespace: vibe-god
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vibe-god-worker
+  namespace: vibe-god
+subjects:
+  - kind: ServiceAccount
+    name: vibe-god-worker
+    namespace: vibe-god
+roleRef:
+  kind: Role
+  name: vibe-god-worker
+  apiGroup: rbac.authorization.k8s.io

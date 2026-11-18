@@ -1,0 +1,18 @@
+apiVersion: v2
+name: vibe-god
+description: Enterprise-grade AI automation platform for Digital India
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - automation
+  - ai
+  - emitra
+  - twitter
+  - digital-india
+maintainers:
+  - name: Vibe-God Team
+    email: team@vibe-god.io
+sources:
+  - https://github.com/vikassangwal/vibe-god
+icon: https://raw.githubusercontent.com/vikassangwal/vibe-god/main/docs/logo.png

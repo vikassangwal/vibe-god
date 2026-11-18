@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vibe-god
+  labels:
+    name: vibe-god
+    environment: production
+    istio-injection: enabled
+  annotations:
+    description: "Vibe-God enterprise AI automation platform"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vibe-god-monitoring
+  labels:
+    name: vibe-god-monitoring
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vibe-god-system
+  labels:
+    name: vibe-god-system

@@ -1,0 +1,23 @@
+[
+  {
+    "timestamp": "2026-11-18 07:58:06",
+    "user": "Nifty 50 trade analysis karo beginner se pro pattern draw",
+    "reply": "Namaste Vikas ji! Analysis error: ^NSEI ka data nahi mila.\n\n<small style='color:#94a3b8;'>⚖️ SEBI Rule: Yeh analysis keval educational aur technical evaluation hetu hai.</small>",
+    "intent": "trading_analysis",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 07:58:37",
+    "user": "mere liye youtube chlao",
+    "reply": "Sahi baat hai bhai. Tu bas hukum kar, baaki main sambhal lunga.",
+    "intent": "general_assistance",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 07:59:04",
+    "user": "mere liye youtube chlao",
+    "reply": "Sahi baat hai bhai. Tu bas hukum kar, baaki main sambhal lunga.",
+    "intent": "general_assistance",
+    "feedback": "neutral"
+  }
+]

@@ -1,0 +1,73 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: vibe-god
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - serviceaccount.yaml
+  - rbac.yaml
+  - api-deployment.yaml
+  - worker-deployment.yaml
+  - scheduler-deployment.yaml
+  - api-service.yaml
+  - hpa.yaml
+  - pdb.yaml
+  - networkpolicy.yaml
+  - servicemonitor.yaml
+
+commonLabels:
+  app.kubernetes.io/name: vibe-god
+  app.kubernetes.io/version: "1.0.0"
+  app.kubernetes.io/managed-by: kustomize
+
+commonAnnotations:
+  app.kubernetes.io/description: "Enterprise AI automation platform"
+
+images:
+  - name: vibe-god/api
+    newTag: latest
+  - name: vibe-god/worker
+    newTag: latest
+  - name: vibe-god/scheduler
+    newTag: latest
+
+configMapGenerator:
+  - name: vibe-god-config
+    behavior: merge
+    literals:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+      - OTLP_ENDPOINT=http://jaeger-collector.observability:4317
+
+secretGenerator:
+  - name: vibe-god-secrets
+    behavior: merge
+    envs:
+      - .env.prod
+    type: Opaque
+
+replacements:
+  - source:
+      kind: ConfigMap
+      name: vibe-god-config
+    targets:
+      - select:
+          kind: Deployment
+        fieldPaths:
+          - spec.template.spec.containers[0].env[?(@.name=="ENVIRONMENT")].value
+          - spec.template.spec.containers[0].env[?(@.name=="LOG_LEVEL")].value
+          - spec.template.spec.containers[0].env[?(@.name=="LOG_FORMAT")].value
+          - spec.template.spec.containers[0].env[?(@.name=="OTLP_ENDPOINT")].value
+
+vars:
+  - name: IMAGE_TAG
+    objref:
+      kind: Deployment
+      name: vibe-god-api
+      apiVersion: apps/v1
+    fieldref:
+      fieldPath: spec.template.spec.containers[0].image

@@ -1,0 +1,287 @@
+version: '3.8'
+
+services:
+  # Main API service
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: vibe-god/api:latest
+    container_name: vibe-god-api
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/vibe_god
+      - REDIS_URL=redis://redis:6379/0
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - OLLAMA_URL=http://ollama:11434
+      - LOG_LEVEL=DEBUG
+      - OTLP_ENDPOINT=http://jaeger:4317
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    volumes:
+      - ../config:/app/config:ro
+      - ./data:/app/data
+      - ./logs:/app/logs
+    networks:
+      - vibe-god-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Worker service for background tasks
+  worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: vibe-god/worker:latest
+    container_name: vibe-god-worker
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/vibe_god
+      - REDIS_URL=redis://redis:6379/0
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - OLLAMA_URL=http://ollama:11434
+      - LOG_LEVEL=DEBUG
+      - WORKER_CONCURRENCY=4
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ../config:/app/config:ro
+      - ./data:/app/data
+      - ./logs:/app/logs
+    networks:
+      - vibe-god-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Scheduler service
+  scheduler:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: vibe-god/scheduler:latest
+    container_name: vibe-god-scheduler
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/vibe_god
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=DEBUG
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../config:/app/config:ro
+      - ./data:/app/data
+      - ./logs:/app/logs
+    networks:
+      - vibe-god-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    container_name: vibe-god-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=vibe_god
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vibe-god-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  # Redis cache
+  redis:
+    image: redis:7-alpine
+    container_name: vibe-god-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vibe-god-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # RabbitMQ message broker
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: vibe-god-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - vibe-god-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Kafka message broker (for high-throughput)
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: vibe-god-kafka
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - vibe-god-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: vibe-god-zookeeper
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_logs:/var/lib/zookeeper/log
+    networks:
+      - vibe-god-network
+
+  # Ollama LLM service
+  ollama:
+    image: ollama/ollama:latest
+    container_name: vibe-god-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - vibe-god-network
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    # GPU support (uncomment if GPU available)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # Mosquitto MQTT broker (for smart home)
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: vibe-god-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    networks:
+      - vibe-god-network
+
+networks:
+  vibe-god-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
+  kafka_data:
+  zookeeper_data:
+  zookeeper_logs:
+  ollama_data:
+  mosquitto_data:
+  mosquitto_logs:
