@@ -280,6 +280,10 @@
             chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
+        function addMessage(type, text) {
+            appendMessage(text, type === 'user');
+        }
+
         async function sendCommand() {
             const query = userInput.value.trim();
             if (!query) return;

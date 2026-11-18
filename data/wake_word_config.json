@@ -1,11 +1,13 @@
 {
-  "active_wake_word": "digi mitra",
+  "active_wake_word": "sakha",
   "supported_aliases": [
     "hey digi",
     "suno mitra",
     "namaste mitra",
     "digi",
-    "bhai"
+    "bhai",
+    "mitra",
+    "sakha"
   ],
   "enabled": true,
   "sensitivity": 0.8
