@@ -1,4 +1,4 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Legal Intelligence & Clean Language Policy Module
 - Polite, Shuddh & Respectful communication (Bina ashleel ya galat bhasha ke)
 - Complete awareness of Indian Laws & Regulations:
@@ -6,14 +6,14 @@ Digi Mitra Legal Intelligence & Clean Language Policy Module
   * Rajasthan eMitra Service Rules & Guidelines
   * SEBI Regulations (Educational Analysis only, No illegal tips)
   * Consumer Protection Act & Cyber Law Compliance
-\"\"\"
+"""
 
 from typing import Dict, Any, List
 
 class LegalKnowledgeAndEtiquetteEngine:
-    \"\"\"
+    """
     Guarantees clean, civilized language and adherence to legal frameworks.
-    \"\"\"
+    """
 
     LEGAL_GUIDELINES = {
         'data_privacy': {
@@ -39,14 +39,14 @@ class LegalKnowledgeAndEtiquetteEngine:
     ]
 
     def format_respectful_response(self, text: str, user_name: str = 'Vikas ji') -> str:
-        \"\"\"Formats any response in polite, dignified and clean Hindi/English\"\"\"
-        prefix = f\"Namaste {user_name}! \"
+        """Formats any response in polite, dignified and clean Hindi/English"""
+        prefix = f"Namaste {user_name}! "
         return prefix + text
 
     def check_legal_compliance(self, intent: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
-        \"\"\"
+        """
         Validates task against Indian legal rules
-        \"\"\"
+        """
         if intent == 'trading_analysis':
             return {
                 'compliant': True,

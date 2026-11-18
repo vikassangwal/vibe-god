@@ -1,4 +1,4 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra 1-Lakh Monthly Milestone Blueprint & Execution Plan
 Math: ₹1,00,000 / month = ₹3,333 / din
 Three Realistic, Sustainable & Legal Growth Engines:
@@ -6,7 +6,7 @@ Three Realistic, Sustainable & Legal Growth Engines:
 2. eMitra & Govt Scheme Express Filing Service: 25 forms/day @ ₹60 margin = ₹45,000
 3. Local Shop Promo Video & Reels Creation: 10 shops @ ₹1,000/mo = ₹10,000
 Total = ₹1,00,000 / Month
-\"\"\"
+"""
 
 from typing import Dict, Any, List
 

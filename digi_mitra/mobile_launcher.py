@@ -1,11 +1,11 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Mobile Deep-Link & Auto-Open App Controller
 - Automatically launches permitted apps on Mobile devices via native OS intent / URL schemes:
   * Zerodha / Trading: kite://, groww://, tradingview://
   * Social/Gov: twitter://, whatsapp:// (only with explicit permission)
   * System tools: tel:, mailto:, sms:
 - Strictly enforces permission check & flashes High Security Alert before opening
-\"\"\"
+"""
 
 from typing import Dict, Any
 

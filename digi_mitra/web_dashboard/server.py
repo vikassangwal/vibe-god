@@ -413,3 +413,12 @@ async def get_system_status():
         "local_ip": get_local_ip()
     })
 
+if __name__ == '__main__':
+    local_ip = get_local_ip()
+    print('=' * 60)
+    print(' DIGI MITRA SERVER CHALU HO GAYA HAI!')
+    print(f' Laptop/PC par kholiye:  http://localhost:8000')
+    print(f' Mobile Phone par kholiye: http://{local_ip}:8000')
+    print('=' * 60)
+    uvicorn.run('digi_mitra.web_dashboard.server:app', host='0.0.0.0', port=8000, reload=False)
+

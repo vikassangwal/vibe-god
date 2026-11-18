@@ -1,10 +1,10 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Autonomous Task Scheduler & Smart Alarm Engine
 - Schedules tasks with time & frequency:
   * One-time: 'kal subah 9 baje ye kaam karo'
   * Recurring: 'roz subah 9:15 baje Nifty chart dekho', 'har somwar bijli bill check karo'
 - Remembers 'kab kab aur kaise karna hai' in offline database
-\"\"\"
+"""
 
 import json
 from pathlib import Path
@@ -34,10 +34,10 @@ class TaskSchedulerEngine:
             pass
 
     def add_scheduled_task(self, command: str, schedule_time: str, frequency: str = 'once', instructions: str = '') -> Dict[str, Any]:
-        \"\"\"
+        """
         Adds an autonomous scheduled task.
         frequency: 'once', 'daily', 'weekly', 'monthly'
-        \"\"\"
+        """
         task_id = f'task_{len(self.tasks) + 1}'
         task_entry = {
             'id': task_id,
@@ -61,7 +61,7 @@ class TaskSchedulerEngine:
         return {
             'success': True,
             'task': task_entry,
-            'message': f'⏰ <b>Task Schedule Ho Gaya!</b><br>📌 <b>Kaam:</b> {command}<br>🕒 <b>Samay:</b> {schedule_time}<br>🔁 <b>Aavritti (Frequency):</b> {freq_hindi}<br>⚙️ <b>Vidhi (Kaise karna hai):</b> {task_entry[\"instructions\"]}'
+            'message': f'⏰ <b>Task Schedule Ho Gaya!</b><br>📌 <b>Kaam:</b> {command}<br>🕒 <b>Samay:</b> {schedule_time}<br>🔁 <b>Aavritti (Frequency):</b> {freq_hindi}<br>⚙️ <b>Vidhi (Kaise karna hai):</b> {task_entry["instructions"]}'
         }
 
     def get_all_scheduled_tasks(self) -> List[Dict[str, Any]]:

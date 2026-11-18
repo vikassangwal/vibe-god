@@ -1,10 +1,10 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Custom Wake Word & Voice Activation Engine
 Allows user to set ANY custom wake word:
 e.g. 'Hey Digi', 'Suno Mitra', 'Digi Mitra', 'Jarvis', or user's custom name.
 Listens continuously in background via mic.
 When wake word is detected, automatically triggers active voice command state!
-\"\"\"
+"""
 
 import json
 from pathlib import Path
@@ -41,7 +41,7 @@ class CustomWakeWordEngine:
             pass
 
     def check_wake_word(self, recognized_speech: str) -> bool:
-        \"\"\"Checks if user said the custom wake word\"\"\"
+        """Checks if user said the custom wake word"""
         if not self.config.get('enabled', True):
             return False
 
@@ -58,7 +58,7 @@ class CustomWakeWordEngine:
         return False
 
     def update_wake_word(self, new_name: str) -> Dict[str, Any]:
-        \"\"\"Change the wake word to whatever custom name user wants\"\"\"
+        """Change the wake word to whatever custom name user wants"""
         cleaned = new_name.lower().strip()
         self.config['active_wake_word'] = cleaned
         if cleaned not in self.config['supported_aliases']:
@@ -67,7 +67,7 @@ class CustomWakeWordEngine:
         return {
             'success': True,
             'new_wake_word': cleaned,
-            'message': f'🎙️ Wake Word safaltapoorvak change ho gaya: \"{new_name.title()}\"! Ab aap phone ya laptop par bolenge: \"{new_name.title()}\" toh Digi Mitra turant jag jayega aur command sunega!'
+            'message': f'🎙️ Wake Word safaltapoorvak change ho gaya: "{new_name.title()}"! Ab aap phone ya laptop par bolenge: "{new_name.title()}" toh Digi Mitra turant jag jayega aur command sunega!'
         }
 
     def get_wake_word(self) -> str:

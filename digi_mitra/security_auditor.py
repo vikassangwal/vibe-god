@@ -1,10 +1,10 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Defensive Cyber Security & Ethical Auditing Engine
 - Local network safety & open port auditing
 - Weak password & configuration vulnerability detection
 - Security hygiene & defensive posture checks
 - 100% legal, non-offensive defensive auditing
-\"\"\"
+"""
 
 import socket
 from pathlib import Path
@@ -20,9 +20,9 @@ class SecurityAuditorEngine:
         }
 
     def check_local_security_posture(self) -> Dict[str, Any]:
-        \"\"\"
+        """
         Performs defensive security audit of local machine to find vulnerabilities.
-        \"\"\"
+        """
         findings = []
         recommendations = []
 

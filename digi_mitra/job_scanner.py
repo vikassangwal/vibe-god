@@ -1,4 +1,4 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Comprehensive Job & Vacancy Scanner Engine
 Capabilities:
 1. Sarkari Jobs (Govt Vacancies):
@@ -7,7 +7,7 @@ Capabilities:
 2. Private & Remote / Work-From-Home Jobs:
    - Data Entry, Customer Support, Content Writing, Telecalling, Computer Operator
    - Platforms: Naukri, Indeed, LinkedIn, Internshala
-\"\"\"
+"""
 
 from typing import Dict, Any, List
 from datetime import datetime

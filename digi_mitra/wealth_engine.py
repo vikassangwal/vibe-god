@@ -1,11 +1,11 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Autonomous Wealth & Monetization Engine
 - 100% legal, automated income streams:
   1. Digital Products Generator: Question papers, study guides, Mandi reports for local sell
   2. eMitra & Cyber Cafe Service Automation: Form filling & Document compression service billing
   3. Idle Bandwidth & Compute Sharing: Monetizing unused Wi-Fi/Laptop idle time
   4. Freelance Content / Social Media Reels creation for clients
-\"\"\"
+"""
 
 from pathlib import Path
 from typing import Dict, Any, List

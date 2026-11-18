@@ -1,11 +1,11 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra History & Lifelong Experience Learning Engine
 - Stores every conversation, task, result and feedback
 - Analyzes past experiences to self-improve and learn:
   * What succeeded vs what failed
   * User preferences and habits
   * Best ways to answer and execute tasks
-\"\"\"
+"""
 
 import json
 from pathlib import Path
@@ -35,7 +35,7 @@ class HistoryLearningEngine:
             pass
 
     def record_interaction(self, user_msg: str, bot_reply: str, intent: str, feedback: str = 'neutral'):
-        \"\"\"Save interaction permanently into lifelong history\"\"\"
+        """Save interaction permanently into lifelong history"""
         entry = {
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'user': user_msg,
@@ -47,9 +47,9 @@ class HistoryLearningEngine:
         self._save_history()
 
     def extract_learnings(self) -> Dict[str, Any]:
-        \"\"\"
+        """
         Inspects past history to extract insights & habits
-        \"\"\"
+        """
         total_interactions = len(self.history)
         intents_count = {}
         for item in self.history:

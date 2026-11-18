@@ -1,4 +1,4 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Client Acquisition & Zero-Cost Financial Guardian Engine
 1. Zero Unnecessary Expenses:
    - Does NOT spend a single rupee without explicit user permission.
@@ -7,7 +7,7 @@ Digi Mitra Client Acquisition & Zero-Cost Financial Guardian Engine
    - Finds local clients for eMitra, coaching papers, video editing, social media.
    - Prepares outreach drafts using ONLY permitted business email / contact info.
    - Never exposes private/personal information without authorization.
-\"\"\"
+"""
 
 import json
 from pathlib import Path
@@ -20,9 +20,9 @@ class ClientAcquisitionGuardianEngine:
         self.balance = 0.0
 
     def verify_expense_permission(self, amount: float, purpose: str) -> Dict[str, Any]:
-        \"\"\"
+        """
         GUARDIAN RULE: Not a single rupee can be spent without explicit permission.
-        \"\"\"
+        """
         return {
             'allowed': False,
             'requires_approval': True,
@@ -31,9 +31,9 @@ class ClientAcquisitionGuardianEngine:
         }
 
     def find_potential_clients(self, service_type: str = 'all') -> Dict[str, Any]:
-        \"\"\"
+        """
         Generates genuine, organic client leads for business monetization.
-        \"\"\"
+        """
         lead_strategies = [
             {
                 'category': '🏫 Local Coachings & Teachers (Question Paper Client)',

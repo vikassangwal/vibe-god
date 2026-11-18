@@ -1,9 +1,9 @@
-﻿\"\"\"
+﻿"""
 Digi Mitra Exam Paper & Blueprint Generator Engine
 - Reads PDF/Text books from device
 - Follows exact blueprint (Total marks, sections: MCQs, Short, Long)
 - Generates professional Question Paper with Answer Key in PDF & Text
-\"\"\"
+"""
 
 import os
 from pathlib import Path
@@ -30,10 +30,10 @@ class ExamPaperGenerator:
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def extract_text_from_book(self, book_path: str, max_pages: int = 40) -> str:
-        \"\"\"Extract chapter text from PDF/TXT book\"\"\"
+        """Extract chapter text from PDF/TXT book"""
         p = Path(book_path)
         if not p.exists():
-            return \"\"
+            return ""
         
         if p.suffix.lower() == '.txt':
             with open(p, 'r', encoding='utf-8', errors='ignore') as f:
@@ -46,23 +46,23 @@ class ExamPaperGenerator:
                     extracted = page.extract_text()
                     if extracted:
                         text_chunks.append(extracted)
-            return \"\n\".join(text_chunks)
+            return "\n".join(text_chunks)
 
-        return \"\"
+        return ""
 
     def generate_question_paper(
         self,
         subject: str,
         total_marks: int = 50,
-        book_content: str = \"\",
+        book_content: str = "",
         blueprint: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        \"\"\"
+        """
         Generates standard examination question paper based on blueprint:
         Section A: 1-Mark Multiple Choice (MCQ)
         Section B: 2-Mark Short Answer Questions
         Section C: 5-Mark Long Descriptive Questions
-        \"\"\"
+        """
         blueprint = blueprint or {
             'mcq_count': max(5, int(total_marks * 0.2)),
             'short_count': max(4, int(total_marks * 0.4 / 2)),
@@ -70,7 +70,7 @@ class ExamPaperGenerator:
         }
 
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        pdf_filename = f\"Question_Paper_{subject}_{total_marks}M_{timestamp}.pdf\"
+        pdf_filename = f"Question_Paper_{subject}_{total_marks}M_{timestamp}.pdf"
         pdf_path = self.output_dir / pdf_filename
 
         paper_sections = {
@@ -114,13 +114,13 @@ class ExamPaperGenerator:
             q_style = ParagraphStyle('QStyle', parent=styles['Normal'], fontSize=10, spaceBefore=4, spaceAfter=4)
 
             elements.append(Paragraph(paper_sections['title'], title_style))
-            elements.append(Paragraph(f\"<b>Time:</b> {paper_sections['time_allowed']} &nbsp;|&nbsp; <b>Maximum Marks:</b> {paper_sections['maximum_marks']}\", meta_style))
+            elements.append(Paragraph(f"<b>Time:</b> {paper_sections['time_allowed']} &nbsp;|&nbsp; <b>Maximum Marks:</b> {paper_sections['maximum_marks']}", meta_style))
             elements.append(Spacer(1, 10))
 
             for sec in paper_sections['sections']:
                 elements.append(Paragraph(sec['name'], sec_style))
                 for q in sec['questions']:
-                    elements.append(Paragraph(f\"{q} &nbsp;&nbsp;<b>[{sec['marks_each']}M]</b>\", q_style))
+                    elements.append(Paragraph(f"{q} &nbsp;&nbsp;<b>[{sec['marks_each']}M]</b>", q_style))
                 elements.append(Spacer(1, 8))
 
             doc.build(elements)
