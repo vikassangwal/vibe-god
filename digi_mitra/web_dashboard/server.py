@@ -43,6 +43,7 @@ from digi_mitra.universal_online_worker import UniversalOnlineWorkEngine
 from digi_mitra.freelance_engine import FreelanceExecutionEngine
 from digi_mitra.wise_mentor import WiseMentorGuardian
 from digi_mitra.job_scanner import JobVacancyScannerEngine
+from digi_mitra.wake_word_engine import CustomWakeWordEngine
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -72,6 +73,7 @@ online_worker = UniversalOnlineWorkEngine()
 freelance_engine = FreelanceExecutionEngine()
 wise_mentor = WiseMentorGuardian()
 job_scanner = JobVacancyScannerEngine()
+wake_engine = CustomWakeWordEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 
@@ -240,6 +242,30 @@ async def process_user_command(query: str = Form(...)):
     elif intent == "mandi_farming":
         result["reply"] = f"🌾 Mandi Bhav & e-NAM: '{query}' live rates updated from Rajasthan APMC mandis."
 
+    elif any(k in query.lower() for k in [
+        "wake word", "naam rakh", "naam badlo", "naam change", "bulane ka naam",
+        "activate naam", "mera naam", "mujhe bulao", "mujhe", "mera custom naam",
+        "jarvis", "alexa", "siri", "bolo", "naam set", "wake naam"
+    ]):
+        # Custom Wake Word Change: User koi bhi naam de sakta hai e.g. "Mera naam Jarvis rakh do"
+        import re
+        # Try extracting new name from common patterns
+        name_match = re.search(
+            r'(?:naam|name|word|bulao|bulaya|set|rakh|badlo|change)[:\s]+([a-zA-Z\u0900-\u097F ]{2,30})',
+            query,
+            re.IGNORECASE
+        )
+        if name_match:
+            new_name = name_match.group(1).strip()
+        else:
+            # Fallback: last meaningful word in query
+            words = [w for w in query.split() if len(w) > 2]
+            new_name = words[-1] if words else "digi mitra"
+
+        ww_res = wake_engine.update_wake_word(new_name)
+        result["reply"] = ww_res["message"]
+        result["new_wake_word"] = ww_res["new_wake_word"]
+
     else:
         # 100% Real Human Conversational Vibe (Samne wale ko bilkul pata na chale)
         human_reply = human_chat.chat_like_real_human(query)
@@ -343,6 +369,23 @@ async def toggle_app_permission(app_name: str = Form(...), allow: bool = Form(..
     permission_mgr.set_permission(app_name, allow)
     status_text = "Allowed" if allow else "Blocked"
     return JSONResponse({"success": True, "message": f"{app_name.capitalize()} ko access {status_text} kar diya gaya hai."})
+
+
+@app.post("/api/set_wake_word")
+async def set_wake_word(name: str = Form(...)):
+    """Change the custom wake word (voice activation trigger)"""
+    res = wake_engine.update_wake_word(name)
+    return JSONResponse(res)
+
+
+@app.get("/api/get_wake_word")
+async def get_wake_word():
+    """Get current active wake word"""
+    return JSONResponse({
+        "wake_word": wake_engine.get_wake_word(),
+        "aliases": wake_engine.config.get("supported_aliases", []),
+        "enabled": wake_engine.config.get("enabled", True)
+    })
 
 
 @app.get("/api/status")

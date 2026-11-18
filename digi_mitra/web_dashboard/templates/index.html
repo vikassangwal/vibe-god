@@ -102,6 +102,28 @@
                 <div class="action-icon">✏️</div>
                 <div class="action-title">Screen Draw Chart</div>
             </div>
+            <div class="action-card" onclick="openWakeWordPanel()">
+                <div class="action-icon">🎙️</div>
+                <div class="action-title">Wake Word Set</div>
+            </div>
+        </div>
+
+        <!-- Wake Word Settings Panel (Hidden by default) -->
+        <div id="wakeWordPanel" style="display:none; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2)); border: 1px solid #818cf8; border-radius: 14px; padding: 15px; margin-bottom: 15px;">
+            <h4 style="color: #a5b4fc; margin-bottom: 6px;">🎙️ Custom Wake Word — Apna Naam Rakhein</h4>
+            <p style="font-size: 0.82rem; color: #cbd5e1; margin-bottom: 10px;">
+                Ab aap Digi Mitra ka koi bhi naam rakh sakte ho — Jarvis, Alexa, Buddy, ya apna koi bhi naam.<br>
+                <span style="color:#818cf8;">Current Wake Word: <b id="currentWakeWordLabel">digi mitra</b></span>
+            </p>
+            <div style="display:flex; gap: 8px; flex-wrap: wrap;">
+                <input type="text" id="wakeWordInput" placeholder="e.g. Jarvis, Buddy, Sakha..." style="flex:1; min-width:160px; padding: 8px 12px; border-radius: 8px; border: 1px solid #818cf8; background: rgba(0,0,0,0.5); color:white; font-size:1rem;">
+                <button onclick="saveWakeWord()" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; border: none; border-radius: 8px; padding: 0 18px; font-weight: 700; cursor: pointer; white-space:nowrap;">💾 Save Naam</button>
+                <button onclick="document.getElementById('wakeWordPanel').style.display='none'" style="background: rgba(100,100,120,0.3); color: #94a3b8; border: 1px solid var(--border); border-radius: 8px; padding: 0 12px; cursor: pointer;">✕</button>
+            </div>
+            <p id="wakeWordStatus" style="color: #34d399; font-size: 0.82rem; margin-top: 8px; display:none;"></p>
+            <p style="font-size:0.75rem; color:#64748b; margin-top:8px;">
+                💡 <i>Always-on mic listener background mein chalta hai. Jab aap wake word bolenge, Digi Mitra turant activate ho jayega!</i>
+            </p>
         </div>
 
         <input type="file" id="docUploadInput" accept="image/*,application/pdf" style="display:none;" onchange="handleFileUpload(event)">
@@ -332,6 +354,106 @@
                 recognition.stop();
                 micBtn.classList.remove('listening');
             }
+        }
+
+        // ════════════════════════════════════════════════════
+        // WAKE WORD PANEL: Open, Load and Save Functions
+        // ════════════════════════════════════════════════════
+
+        async function openWakeWordPanel() {
+            const panel = document.getElementById('wakeWordPanel');
+            panel.style.display = 'block';
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            try {
+                const resp = await fetch('/api/get_wake_word');
+                const data = await resp.json();
+                document.getElementById('currentWakeWordLabel').textContent = data.wake_word || 'digi mitra';
+            } catch(e) {}
+        }
+
+        async function saveWakeWord() {
+            const input = document.getElementById('wakeWordInput').value.trim();
+            if (!input) { alert('Pehle naaya naam darj karein!'); return; }
+            const form = new FormData();
+            form.append('name', input);
+            try {
+                const resp = await fetch('/api/set_wake_word', { method: 'POST', body: form });
+                const data = await resp.json();
+                if (data.success) {
+                    document.getElementById('currentWakeWordLabel').textContent = data.new_wake_word;
+                    const statusEl = document.getElementById('wakeWordStatus');
+                    statusEl.textContent = data.message;
+                    statusEl.style.display = 'block';
+                    activeWakeWord = data.new_wake_word.toLowerCase();
+                    document.getElementById('wakeWordInput').value = '';
+                    addMessage('bot', data.message);
+                }
+            } catch(e) {
+                alert('Server se connect nahi ho paya. Server chal raha hai?');
+            }
+        }
+
+        // ALWAYS-ON BACKGROUND WAKE WORD LISTENER
+        let activeWakeWord = 'digi mitra';
+        let bgListening = false;
+        let bgRecognition = null;
+
+        (async function initWakeWord() {
+            try {
+                const r = await fetch('/api/get_wake_word');
+                const d = await r.json();
+                activeWakeWord = (d.wake_word || 'digi mitra').toLowerCase();
+            } catch(e) {}
+            startBackgroundWakeListener();
+        })();
+
+        function startBackgroundWakeListener() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) return;
+            bgRecognition = new SpeechRec();
+            bgRecognition.continuous = true;
+            bgRecognition.interimResults = true;
+            bgRecognition.lang = activeLang;
+            bgRecognition.onresult = (event) => {
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript.toLowerCase().trim();
+                    if (transcript.includes(activeWakeWord)) {
+                        bgListening = true;
+                        activateByWakeWord(activeWakeWord);
+                        bgRecognition.stop();
+                    }
+                }
+            };
+            bgRecognition.onerror = () => { setTimeout(() => { startBackgroundWakeListener(); }, 1500); };
+            bgRecognition.onend = () => {
+                if (!bgListening) { setTimeout(() => { startBackgroundWakeListener(); }, 800); }
+                bgListening = false;
+            };
+            try { bgRecognition.start(); }
+            catch(e) { setTimeout(() => { startBackgroundWakeListener(); }, 2000); }
+        }
+
+        function activateByWakeWord(wakeWord) {
+            const micBtn = document.getElementById('micBtn');
+            micBtn.classList.add('listening');
+            micBtn.textContent = '👂';
+            addMessage('bot', '<b>' + wakeWord.charAt(0).toUpperCase() + wakeWord.slice(1) + ' ne bula liya!</b> Boliye — main sun raha hoon...');
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) return;
+            const cmdRec = new SpeechRec();
+            cmdRec.continuous = false;
+            cmdRec.interimResults = false;
+            cmdRec.lang = activeLang;
+            cmdRec.onresult = (event) => {
+                const text = event.results[0][0].transcript;
+                document.getElementById('userInput').value = text;
+                micBtn.classList.remove('listening');
+                micBtn.textContent = '🎤';
+                sendCommand();
+            };
+            cmdRec.onerror = () => { micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; startBackgroundWakeListener(); };
+            cmdRec.onend = () => { micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; setTimeout(() => { startBackgroundWakeListener(); }, 500); };
+            setTimeout(() => { cmdRec.start(); }, 300);
         }
     </script>
 </body>
