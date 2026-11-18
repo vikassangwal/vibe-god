@@ -52,11 +52,10 @@ class NaturalHumanChatEngine:
             ]
             return random.choice(replies)
 
-        # Real human conversational responses
+        # Real human conversational responses with actual substance
         replies = [
-            f"Haan bhai, teri baat samajh gaya. Isko aise hi karte hain, chinta mat kar.",
-            f"Arey bilkul, sahi point pakda hai tune. Ispe main dhyan de raha hoon.",
-            f"Sahi baat hai bhai. Tu bas hukum kar, baaki main sambhal lunga.",
-            f"Haan re, baat mein dum hai teri. Bata abhi karna hai ya thodi der mein?"
+            f"Haan Vikas bhai, aapne kaha: '{user_msg}'. Ispe bilkul theek se dhyan de raha hoon. Bataiye isme aage ka step kya karna hai?",
+            f"Sahi baat hai bhai, '{user_msg}' ke baare mein maine note kar liya hai. Agar iska online form bharna ho, documents check karne hon ya details nikalni hon toh bas boliye, turant start karte hain.",
+            f"Arey bilkul bhai! '{user_msg}' par kaam ho jayega. Bas aap hukum kijiye, main ready hoon."
         ]
         return random.choice(replies)

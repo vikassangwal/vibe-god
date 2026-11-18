@@ -44,6 +44,7 @@ from digi_mitra.freelance_engine import FreelanceExecutionEngine
 from digi_mitra.wise_mentor import WiseMentorGuardian
 from digi_mitra.job_scanner import JobVacancyScannerEngine
 from digi_mitra.wake_word_engine import CustomWakeWordEngine
+from digi_mitra.knowledge_brain import SovereignKnowledgeBrain
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -74,6 +75,7 @@ freelance_engine = FreelanceExecutionEngine()
 wise_mentor = WiseMentorGuardian()
 job_scanner = JobVacancyScannerEngine()
 wake_engine = CustomWakeWordEngine()
+knowledge_brain = SovereignKnowledgeBrain()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 app.mount("/static", StaticFiles(directory="digi_mitra/web_dashboard/static"), name="static")
@@ -129,6 +131,13 @@ async def process_user_command(query: str = Form(...)):
             if not alert_check.get("allowed"):
                 reply = f"🚨 <b>SECURITY ALERT (Suraksha Chetavni)</b>:<br>{alert_check['security_alert']}<br><br>👉 <i>{alert_check['prompt']}</i><br><small style='color:#f87171;'>Suraksha ke niyam anusar jab tak aap Dashboard se 'Allow' switch ON nahi karenge, yeh app 100% blocked rahega.</small>"
                 return JSONResponse({"intent": "security_alert", "reply": legal_engine.format_respectful_response(reply)})
+
+    # 2. Sovereign Knowledge Brain: Check if user is asking a question, seeking advice or shopping recommendation
+    kb_answer = knowledge_brain.answer_question(query)
+    if kb_answer and kb_answer.get("matched"):
+        clean_reply = legal_engine.format_respectful_response(kb_answer["reply"])
+        history_learner.record_interaction(query, clean_reply, "knowledge_qa")
+        return JSONResponse({"intent": "knowledge_qa", "reply": clean_reply})
 
     result = {"intent": intent, "parsed": parsed, "reply": ""}
 

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Digi Mitra NLU (Natural Language Understanding)
 Smarts to understand broken language, Hinglish, typos, and Hindi-English mixes.
 Works offline with fuzzy matching + regex + local LLM fallback.
@@ -30,8 +30,7 @@ class SmartNLU:
             'trim', 'subtitles', 'reel', 'reels', 'shorts', 'crop'
         ],
         'research': [
-            'research', 'resrch', 'khoj', 'dhoondho', 'khojo', 'search', 'seekho',
-            'learn', 'shikhe', 'study', 'padho', 'jankari', 'information', 'batao'
+            'deep research', 'khoj', 'dhoondho', 'khojo', 'deep study'
         ],
         'mandi_farming': [
             'mandi', 'mndy', 'kheti', 'fasal', 'khet', 'rate', 'bhav', 'enam',
