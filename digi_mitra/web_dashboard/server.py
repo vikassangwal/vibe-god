@@ -15,7 +15,7 @@ from typing import Dict, Any, Optional
 
 import uvicorn
 from fastapi import FastAPI, Request, Form, UploadFile, File
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -76,6 +76,18 @@ job_scanner = JobVacancyScannerEngine()
 wake_engine = CustomWakeWordEngine()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
+app.mount("/static", StaticFiles(directory="digi_mitra/web_dashboard/static"), name="static")
+
+
+@app.get("/manifest.json")
+async def get_manifest():
+    return FileResponse("digi_mitra/web_dashboard/static/manifest.json", media_type="application/manifest+json")
+
+
+@app.get("/sw.js")
+async def get_sw():
+    return FileResponse("digi_mitra/web_dashboard/static/sw.js", media_type="application/javascript", headers={"Service-Worker-Allowed": "/"})
+
 
 def get_local_ip():
     try:

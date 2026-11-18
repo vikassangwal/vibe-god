@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>👑 DIGI MITRA - AI Super Agent</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#090D16">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Digi Mitra">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -105,6 +112,65 @@
             <div class="action-card" onclick="openWakeWordPanel()">
                 <div class="action-icon">🎙️</div>
                 <div class="action-title">Wake Word Set</div>
+            </div>
+            <div class="action-card" onclick="showInstallGuide()" style="border-color: rgba(52, 211, 153, 0.4);">
+                <div class="action-icon">📲</div>
+                <div class="action-title" style="color: var(--success);">Install App</div>
+            </div>
+        </div>
+
+        <!-- PWA Quick Install Banner (Appears when installable) -->
+        <div id="pwaInstallBanner" style="display:none; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(56, 189, 248, 0.2)); border: 1px solid #10b981; border-radius: 14px; padding: 14px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span style="font-size:2rem;">📲</span>
+                <div>
+                    <h4 style="color:#34d399; margin-bottom:2px;">Digi Mitra App Install Karein!</h4>
+                    <p style="font-size:0.82rem; color:#cbd5e1;">Bina browser kholiye phone ya laptop ki home screen se 1-click me open karein.</p>
+                </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button onclick="triggerPwaInstall()" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 8px; padding: 10px 18px; font-weight: 700; cursor: pointer;">⚡ Abhi Install Karein</button>
+                <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" style="background: rgba(100,100,120,0.3); color: #94a3b8; border: 1px solid var(--border); border-radius: 8px; padding: 0 10px; cursor: pointer;">✕</button>
+            </div>
+        </div>
+
+        <!-- Install Guide Modal -->
+        <div id="installGuideModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:9999; display:flex; justify-content:center; align-items:center; padding:15px;">
+            <div style="background: #111827; border: 1px solid #38bdf8; border-radius: 18px; max-width: 520px; width: 100%; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); max-height:90vh; overflow-y:auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <h3 style="color:#38bdf8; font-size:1.2rem; display:flex; align-items:center; gap:8px;">📲 App Ke Roop Mein Install Karein</h3>
+                    <button onclick="document.getElementById('installGuideModal').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;">✕</button>
+                </div>
+
+                <div id="directInstallBtnContainer" style="margin-bottom:18px; display:none;">
+                    <button onclick="triggerPwaInstall()" style="width:100%; background:linear-gradient(135deg, #10b981, #059669); color:white; border:none; border-radius:12px; padding:12px; font-size:1rem; font-weight:700; cursor:pointer;">
+                        ⚡ 1-Click Install Button Dabayein
+                    </button>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px; margin-bottom:14px;">
+                    <h4 style="color:#34d399; margin-bottom:8px;">📱 Android Mobile / Phone Par:</h4>
+                    <ol style="font-size:0.85rem; color:#cbd5e1; line-height:1.7; padding-left:18px;">
+                        <li>Chrome ya apne phone ke browser mein yeh link kholiye.</li>
+                        <li>Top-right mein <b>3 Dots (⋮)</b> menu par tap karein.</li>
+                        <li><b>"Install app"</b> ya <b>"Add to Home screen"</b> (होम स्क्रीन पर जोड़ें) par click karein.</li>
+                        <li><b>"Install"</b> dabayein — Digi Mitra ka icon aapke phone ki home screen par real Android app ki tarah aa jayega!</li>
+                    </ol>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px; margin-bottom:14px;">
+                    <h4 style="color:#818cf8; margin-bottom:8px;">💻 Windows Laptop / PC Par:</h4>
+                    <ol style="font-size:0.85rem; color:#cbd5e1; line-height:1.7; padding-left:18px;">
+                        <li>Chrome ya Edge browser mein link kholiye.</li>
+                        <li>URL bar ke daayein (Right) taraf <b>[⊕ Install Digi Mitra]</b> icon dikhega, uspe click karein.</li>
+                        <li>Ya fir <b>3 Dots (⋮)</b> par jaakar <b>"Save and share" -> "Install Digi Mitra"</b> par click karein.</li>
+                        <li>Aapke Windows Desktop aur Start Menu mein Digi Mitra ka icon ban jayega!</li>
+                    </ol>
+                </div>
+
+                <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); border-radius:10px; padding:10px; font-size:0.8rem; color:#a5f3fc;">
+                    ✨ <b>Fayda:</b> App install hone ke baad bina browser URL bar ke full-screen chalta hai, fast load hota hai, aur offline cache support karta hai!
+                </div>
             </div>
         </div>
 
@@ -454,6 +520,58 @@
             cmdRec.onerror = () => { micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; startBackgroundWakeListener(); };
             cmdRec.onend = () => { micBtn.classList.remove('listening'); micBtn.textContent = '🎤'; setTimeout(() => { startBackgroundWakeListener(); }, 500); };
             setTimeout(() => { cmdRec.start(); }, 300);
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // 📲 PWA INSTALLATION SYSTEM (Android & Windows Desktop)
+        // ══════════════════════════════════════════════════════════════════
+
+        let deferredPrompt = null;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show banner & direct 1-click button in modal
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) banner.style.display = 'flex';
+            const directBtn = document.getElementById('directInstallBtnContainer');
+            if (directBtn) directBtn.style.display = 'block';
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) banner.style.display = 'none';
+            addMessage('bot', '🎉 <b>Digi Mitra App Safaltapoorvak Install Ho Gaya!</b> Ab aap ise direct apne mobile ya computer ke Home Screen icon se khol sakte hain.');
+        });
+
+        function showInstallGuide() {
+            document.getElementById('installGuideModal').style.display = 'flex';
+        }
+
+        async function triggerPwaInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const choice = await deferredPrompt.userChoice;
+                if (choice.outcome === 'accepted') {
+                    console.log('User installed Digi Mitra app');
+                }
+                deferredPrompt = null;
+                const banner = document.getElementById('pwaInstallBanner');
+                if (banner) banner.style.display = 'none';
+                document.getElementById('installGuideModal').style.display = 'none';
+            } else {
+                showInstallGuide();
+            }
+        }
+
+        // Register Service Worker for offline capability & full PWA installability
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((reg) => console.log('Digi Mitra Service Worker Registered!', reg.scope))
+                    .catch((err) => console.log('Service Worker registration failed:', err));
+            });
         }
     </script>
 </body>
