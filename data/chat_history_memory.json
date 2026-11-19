@@ -75,5 +75,19 @@
     "reply": "Namaste Vikas ji! 🧠 Research Complete (Boliye, main active hoon...):\nBoliye, main active hoon... par autonomous research complete ho gayi hai.",
     "intent": "research",
     "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-19 14:40:09",
+    "user": "auto screen worker",
+    "reply": "Haan Vikas bhai, aapne kaha: 'auto screen worker'. Ispe bilkul theek se dhyan de raha hoon. Bataiye isme aage ka step kya karna hai?",
+    "intent": "general_assistance",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-19 14:54:16",
+    "user": "auto screen worker",
+    "reply": "Namaste Vikas ji! 🖥️ <b>Auto Screen Worker Active Hai:</b><br>• Resolution: <b>1024 x 768 px</b><br>• Cursor Position: (0, 0)<br>• Active Window: <i>Desktop</i><br>• Controls: <i>Chart Drawing, Mouse Click, Auto Typing, Window Switch & Scroll ready!</i>",
+    "intent": "screen_worker",
+    "feedback": "neutral"
   }
 ]

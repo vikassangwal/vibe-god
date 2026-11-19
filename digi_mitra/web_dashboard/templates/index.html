@@ -81,9 +81,15 @@
             <h1>👑 DIGI MITRA</h1>
             <span style="font-size: 0.75rem; color: var(--text-muted);">Autonomous Sovereign AI Agent</span>
         </div>
-        <div class="status-badge">
-            <div class="status-dot"></div>
-            <span>100% LOCAL ACTIVE</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <div id="aiBrainBadge" class="status-badge" onclick="openApiSettingsModal()" style="cursor:pointer; background:rgba(245, 158, 11, 0.15); color:#fbbf24; border:1px solid rgba(245, 158, 11, 0.3);">
+                <div id="aiBrainDot" class="status-dot" style="background:#fbbf24;"></div>
+                <span id="aiBrainStatusText">AI: LOCAL</span>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span>SERVER ACTIVE</span>
+            </div>
         </div>
     </div>
 
@@ -99,6 +105,10 @@
 
         <!-- Quick 1-Click Action Buttons -->
         <div class="quick-actions">
+            <div class="action-card" onclick="openApiSettingsModal()" style="border-color: rgba(245, 158, 11, 0.4);">
+                <div class="action-icon">🔑</div>
+                <div class="action-title" style="color: #fbbf24;">API Settings</div>
+            </div>
             <div class="action-card" onclick="quickCommand('Nifty 50 trade analysis karo beginner se pro pattern draw')">
                 <div class="action-icon">📈</div>
                 <div class="action-title">Trade Analysis</div>
@@ -115,9 +125,25 @@
                 <div class="action-icon">📸</div>
                 <div class="action-title">Upload & Resize Doc</div>
             </div>
-            <div class="action-card" onclick="drawChartScreen()">
-                <div class="action-icon">✏️</div>
-                <div class="action-title">Screen Draw Chart</div>
+            <div class="action-card" onclick="drawChartScreen()" style="border-color: rgba(56, 189, 248, 0.4);">
+                <div class="action-icon">🖥️</div>
+                <div class="action-title" style="color: #38bdf8;">Auto Screen Worker</div>
+            </div>
+            <div class="action-card" onclick="openWhatsAppModal()" style="border-color: rgba(37, 211, 102, 0.4);">
+                <div class="action-icon">📱</div>
+                <div class="action-title" style="color: #25d366;">WhatsApp Bot</div>
+            </div>
+            <div class="action-card" onclick="openFormModal()" style="border-color: rgba(56, 189, 248, 0.4);">
+                <div class="action-icon">📄</div>
+                <div class="action-title" style="color: #38bdf8;">PDF Form Maker</div>
+            </div>
+            <div class="action-card" onclick="openYojnaModal()" style="border-color: rgba(168, 85, 247, 0.4);">
+                <div class="action-icon">🌐</div>
+                <div class="action-title" style="color: #c084fc;">Sarkari Radar</div>
+            </div>
+            <div class="action-card" onclick="openReelModal()" style="border-color: rgba(236, 72, 153, 0.4);">
+                <div class="action-icon">🎬</div>
+                <div class="action-title" style="color: #f472b6;">AI Reel Maker</div>
             </div>
             <div class="action-card" onclick="openWakeWordPanel()">
                 <div class="action-icon">🎙️</div>
@@ -181,6 +207,216 @@
                 <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2); border-radius:10px; padding:10px; font-size:0.8rem; color:#a5f3fc;">
                     ✨ <b>Fayda:</b> App install hone ke baad bina browser URL bar ke full-screen chalta hai, fast load hota hai, aur offline cache support karta hai!
                 </div>
+            </div>
+        </div>
+
+        <!-- API Settings Modal -->
+        <div id="apiSettingsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px;">
+            <div style="background: #0f172a; border: 1px solid #f59e0b; border-radius: 20px; max-width: 560px; width: 100%; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height:92vh; overflow-y:auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+                    <div>
+                        <h3 style="color:#fbbf24; font-size:1.25rem; display:flex; align-items:center; gap:8px;">
+                            <span>🔑</span> AI Brain & API Settings
+                        </h3>
+                        <p style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">Google Gemini, Groq, OpenAI ya Claude ki API lagayein</p>
+                    </div>
+                    <button onclick="closeApiSettingsModal()" style="background:none; border:none; color:#94a3b8; font-size:1.6rem; cursor:pointer;">✕</button>
+                </div>
+
+                <!-- Provider Selector -->
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:6px;">1. AI Provider Chunein:</label>
+                    <select id="apiProviderSelect" onchange="onProviderSelectChange()" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                        <option value="gemini">🌟 Google Gemini (Recommended - Free & High Quality)</option>
+                        <option value="groq">⚡ Groq Cloud (Free Llama 3.3 70B - Super Fast)</option>
+                        <option value="openai">🧠 OpenAI (GPT-4o / GPT-4o-mini)</option>
+                        <option value="anthropic">🎭 Anthropic Claude (Claude 3.5 Sonnet / Haiku)</option>
+                        <option value="openrouter">🌐 OpenRouter (DeepSeek R1/V3 & All Models)</option>
+                        <option value="ollama">💻 Ollama (Local PC / Laptop Offline LLM)</option>
+                        <option value="local">🏠 Offline Local Brain (Rule-Based & Knowledge Brain)</option>
+                    </select>
+                </div>
+
+                <!-- Model Selector -->
+                <div id="modelSelectGroup" style="margin-bottom:16px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:6px;">2. Model Version:</label>
+                    <select id="apiModelSelect" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                    </select>
+                </div>
+
+                <!-- API Key Input -->
+                <div id="apiKeyGroup" style="margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <label style="font-size:0.85rem; font-weight:600; color:#e2e8f0;">3. API Key Yahan Dalein:</label>
+                        <span id="keyConfiguredStatus" style="font-size:0.75rem; color:#34d399; font-weight:600;"></span>
+                    </div>
+                    <div style="position:relative; display:flex; align-items:center;">
+                        <input type="password" id="apiKeyInput" placeholder="Yahan API Key paste karein" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 42px 10px 12px; font-size:0.95rem; outline:none;">
+                        <button type="button" onclick="toggleKeyVisibility()" style="position:absolute; right:10px; background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1.1rem;">👁️</button>
+                    </div>
+                    <p id="currentKeyHint" style="font-size:0.78rem; color:#94a3b8; margin-top:5px;"></p>
+                </div>
+
+                <!-- Test & Save Buttons -->
+                <div style="display:flex; gap:10px; margin-top:18px;">
+                    <button type="button" id="btnTestApi" onclick="testCurrentApi()" style="flex:1; background:rgba(245, 158, 11, 0.18); color:#fbbf24; border:1px solid #f59e0b; border-radius:10px; padding:10px; font-weight:700; cursor:pointer; font-size:0.9rem;">
+                        ⚡ Test Connection
+                    </button>
+                    <button type="button" id="btnSaveApi" onclick="saveCurrentApi()" style="flex:1; background:linear-gradient(135deg, #10b981, #059669); color:white; border:none; border-radius:10px; padding:10px; font-weight:700; cursor:pointer; font-size:0.9rem;">
+                        💾 Save & Activate
+                    </button>
+                </div>
+
+                <!-- Status Feedback Message Box -->
+                <div id="apiTestResult" style="display:none; margin-top:14px; padding:12px; border-radius:10px; font-size:0.85rem;"></div>
+
+                <!-- Helpful Links Box -->
+                <div id="apiHelpLinks" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:12px; margin-top:18px; font-size:0.8rem; line-height:1.6;">
+                    <div style="color:#38bdf8; font-weight:600; margin-bottom:4px;">💡 Free API Key Kahan Se Milegi?</div>
+                    <div id="providerHelpText" style="color:#cbd5e1;">
+                        • <b>Google Gemini Free Key:</b> <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#38bdf8; text-decoration:underline;">Google AI Studio</a> par jaakar free API key generate karein.<br>
+                        • <b>Groq Free Key:</b> <a href="https://console.groq.com/keys" target="_blank" style="color:#38bdf8; text-decoration:underline;">Groq Console</a> par signup karke free high-speed Llama 3 key banayein.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. WHATSAPP BOT MODAL -->
+        <div id="whatsappModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px;">
+            <div style="background: #0f172a; border: 1px solid #25d366; border-radius: 20px; max-width: 520px; width: 100%; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height:92vh; overflow-y:auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
+                    <div>
+                        <h3 style="color:#25d366; font-size:1.25rem; display:flex; align-items:center; gap:8px;">
+                            <span>📱</span> WhatsApp Automation Bot
+                        </h3>
+                        <p style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">100% Free Instant WhatsApp Dispatch</p>
+                    </div>
+                    <button onclick="document.getElementById('whatsappModal').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:1.6rem; cursor:pointer;">✕</button>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:5px;">Mobile Number (With Country Code):</label>
+                    <input type="text" id="waPhoneInput" placeholder="e.g. 9876543210 ya 919876543210" value="919876543210" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:5px;">Message Template Chunein:</label>
+                    <select id="waTemplateSelect" onchange="onWaTemplateChange()" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                        <option value="emitra_receipt">🏛️ eMitra Service Acknowledgment Slip</option>
+                        <option value="mandi_rates">🌾 Daily Mandi Live Crop Bhav</option>
+                        <option value="trading_alert">📈 Live Trading Signal & Analysis</option>
+                        <option value="custom">✍️ Custom Message / Notice</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:5px;">Message Preview / Custom Text:</label>
+                    <textarea id="waCustomText" rows="4" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px; font-size:0.9rem; outline:none; resize:vertical;"></textarea>
+                </div>
+
+                <button onclick="dispatchWhatsApp()" style="width:100%; background:linear-gradient(135deg, #25D366, #128C7E); color:white; border:none; border-radius:10px; padding:12px; font-weight:700; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    ⚡ WhatsApp Par Dispatch Karein
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. FORM & PDF GENERATOR MODAL -->
+        <div id="formModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px;">
+            <div style="background: #0f172a; border: 1px solid #38bdf8; border-radius: 20px; max-width: 540px; width: 100%; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height:92vh; overflow-y:auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
+                    <div>
+                        <h3 style="color:#38bdf8; font-size:1.25rem; display:flex; align-items:center; gap:8px;">
+                            <span>📄</span> Legal & Sarkari Form PDF Maker
+                        </h3>
+                        <p style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">1-Click Ready-to-Print Official Documents</p>
+                    </div>
+                    <button onclick="document.getElementById('formModal').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:1.6rem; cursor:pointer;">✕</button>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:5px;">Document Type:</label>
+                    <select id="formDocType" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                        <option value="shapath_patra">📋 Jan Aadhaar / Caste Shapath Patra (Self-Declaration)</option>
+                        <option value="rent_agreement">🏠 Residential Rent Agreement (Kirayanama)</option>
+                        <option value="emitra_receipt">🏛️ eMitra Kiosk Customer Receipt Slip</option>
+                        <option value="invoice">💵 Business Cash Memo / Invoice</option>
+                        <option value="affidavit">⚖️ General Legal Affidavit</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:5px;">Pura Naam (Full Name):</label>
+                    <input type="text" id="formApplicantName" value="Vikas Sangwal" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                </div>
+
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:5px;">Fees / Rent / Amount (INR):</label>
+                    <input type="text" id="formAmountInput" value="50" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                </div>
+
+                <button id="btnGenerateFormPdf" onclick="generateAndDownloadPdf()" style="width:100%; background:linear-gradient(135deg, #0284c7, #2563eb); color:white; border:none; border-radius:10px; padding:12px; font-weight:700; cursor:pointer; font-size:1rem;">
+                    ⚡ Generate & Download PDF
+                </button>
+                <div id="formPdfResult" style="display:none; margin-top:12px; text-align:center;"></div>
+            </div>
+        </div>
+
+        <!-- 3. SARKARI YOJNA & VACANCY RADAR MODAL -->
+        <div id="yojnaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px;">
+            <div style="background: #0f172a; border: 1px solid #a855f7; border-radius: 20px; max-width: 600px; width: 100%; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height:92vh; overflow-y:auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
+                    <div>
+                        <h3 style="color:#c084fc; font-size:1.25rem; display:flex; align-items:center; gap:8px;">
+                            <span>🌐</span> Sarkari Yojna & Vacancy Radar
+                        </h3>
+                        <p style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">Government Schemes, Jobs & Mandi Bhav</p>
+                    </div>
+                    <button onclick="document.getElementById('yojnaModal').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:1.6rem; cursor:pointer;">✕</button>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-bottom:14px;">
+                    <button onclick="loadRadarCategory('yojna')" id="btnRadarYojna" style="flex:1; background:#a855f7; color:white; border:none; border-radius:8px; padding:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">🏛️ Top Yojanas</button>
+                    <button onclick="loadRadarCategory('vacancy')" id="btnRadarVacancy" style="flex:1; background:rgba(255,255,255,0.08); color:#cbd5e1; border:none; border-radius:8px; padding:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">💼 Active Vacancies</button>
+                    <button onclick="loadRadarCategory('mandi')" id="btnRadarMandi" style="flex:1; background:rgba(255,255,255,0.08); color:#cbd5e1; border:none; border-radius:8px; padding:8px; font-weight:600; cursor:pointer; font-size:0.85rem;">🌾 Mandi Rates</button>
+                </div>
+
+                <div id="radarContentList" style="max-height:360px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+                    <p style="color:#94a3b8; text-align:center;">Loading radar data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. AI REEL MAKER MODAL -->
+        <div id="reelModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; display:flex; justify-content:center; align-items:center; padding:15px;">
+            <div style="background: #0f172a; border: 1px solid #ec4899; border-radius: 20px; max-width: 520px; width: 100%; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height:92vh; overflow-y:auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
+                    <div>
+                        <h3 style="color:#f472b6; font-size:1.25rem; display:flex; align-items:center; gap:8px;">
+                            <span>🎬</span> AI Short Video & Reel Maker
+                        </h3>
+                        <p style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">9:16 Vertical HD Short Videos in Seconds</p>
+                    </div>
+                    <button onclick="document.getElementById('reelModal').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:1.6rem; cursor:pointer;">✕</button>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:5px;">Reel Category:</label>
+                    <select id="reelCategorySelect" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                        <option value="trading">📈 Trading Strategy & Chart Pattern Reel</option>
+                        <option value="emitra">🏛️ Jan Aadhaar & Sarkari Yojna Alert Reel</option>
+                        <option value="business">💰 Business Earning & Motivation Reel</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:5px;">Custom Reel Title (Optional):</label>
+                    <input type="text" id="reelTitleInput" placeholder="Auto-generated if left empty" style="width:100%; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:10px; padding:10px 12px; font-size:0.95rem; outline:none;">
+                </div>
+
+                <button id="btnCreateReel" onclick="generateShortReel()" style="width:100%; background:linear-gradient(135deg, #ec4899, #db2777); color:white; border:none; border-radius:10px; padding:12px; font-weight:700; cursor:pointer; font-size:1rem;">
+                    ⚡ Render 9:16 Reel Video (MP4)
+                </button>
+                <div id="reelResultBox" style="display:none; margin-top:14px; text-align:center;"></div>
             </div>
         </div>
 
@@ -411,11 +647,18 @@
         }
 
         async function drawChartScreen() {
-            appendMessage('Screen par Candlestick & Trendline draw kiya ja raha hai...', true);
+            appendMessage('🖥️ <b>Auto Screen Worker Active:</b> Screen par Candlestick & Trendline draw kiya ja raha hai...', true);
             try {
-                const resp = await fetch('/api/draw_chart', { method: 'POST' });
+                const formData = new FormData();
+                formData.append('pattern', 'trendline');
+                const resp = await fetch('/api/draw_chart', { method: 'POST', body: formData });
                 const data = await resp.json();
-                appendMessage(data.message || 'Chart pattern screen par draw ho gaya!');
+                if (data.success) {
+                    appendMessage(data.message || '📈 Screen chart par trendline & pattern marker draw ho gaya!');
+                    speakText(data.message || 'Screen chart par trendline draw ho gayi!');
+                } else {
+                    appendMessage('⚠️ Screen Worker Error: ' + (data.error || 'Could not draw on screen'));
+                }
             } catch(e) {
                 appendMessage('Screen control error: ' + e.message);
             }
@@ -726,6 +969,430 @@
                 toggleVoice();
             }
         });
+
+        // ======================== API & AI BRAIN SETTINGS ========================
+        let cachedLlmConfig = null;
+
+        async function fetchAndRenderLlmStatus() {
+            try {
+                const resp = await fetch('/api/llm/config');
+                const cfg = await resp.json();
+                cachedLlmConfig = cfg;
+                const active = cfg.active_provider || 'local';
+                const badgeText = document.getElementById('aiBrainStatusText');
+                const badgeDot = document.getElementById('aiBrainDot');
+                const badge = document.getElementById('aiBrainBadge');
+
+                if (!badgeText) return;
+
+                if (active === 'local') {
+                    badgeText.textContent = 'AI: LOCAL';
+                    badgeDot.style.background = '#94a3b8';
+                    badge.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+                    badge.style.color = '#94a3b8';
+                } else {
+                    const provName = cfg.providers[active]?.name || active.toUpperCase();
+                    badgeText.textContent = '⚡ ' + provName.split(' ')[0].toUpperCase();
+                    badgeDot.style.background = '#34d399';
+                    badge.style.borderColor = 'rgba(52, 211, 153, 0.4)';
+                    badge.style.color = '#34d399';
+                }
+            } catch (e) {
+                console.warn('Failed to load LLM config:', e);
+            }
+        }
+
+        async function openApiSettingsModal() {
+            const modal = document.getElementById('apiSettingsModal');
+            modal.style.display = 'flex';
+            document.getElementById('apiTestResult').style.display = 'none';
+
+            if (!cachedLlmConfig) {
+                try {
+                    const resp = await fetch('/api/llm/config');
+                    cachedLlmConfig = await resp.json();
+                } catch(e) {}
+            }
+            if (cachedLlmConfig) {
+                const active = cachedLlmConfig.active_provider || 'gemini';
+                document.getElementById('apiProviderSelect').value = active;
+                onProviderSelectChange();
+            }
+        }
+
+        function closeApiSettingsModal() {
+            document.getElementById('apiSettingsModal').style.display = 'none';
+        }
+
+        function onProviderSelectChange() {
+            const provider = document.getElementById('apiProviderSelect').value;
+            const modelGroup = document.getElementById('modelSelectGroup');
+            const keyGroup = document.getElementById('apiKeyGroup');
+            const modelSelect = document.getElementById('apiModelSelect');
+            const keyInput = document.getElementById('apiKeyInput');
+            const statusLabel = document.getElementById('keyConfiguredStatus');
+            const keyHint = document.getElementById('currentKeyHint');
+            const helpText = document.getElementById('providerHelpText');
+
+            if (provider === 'local') {
+                modelGroup.style.display = 'none';
+                keyGroup.style.display = 'none';
+                document.getElementById('btnTestApi').style.display = 'none';
+                helpText.innerHTML = '• <b>Local Offline Mode:</b> Isme kisi internet ya API key ki zaroorat nahi hai. Rule-based aur built-in knowledge brain kaam karega.';
+                return;
+            }
+
+            modelGroup.style.display = 'block';
+            keyGroup.style.display = 'block';
+            document.getElementById('btnTestApi').style.display = 'block';
+
+            const pData = cachedLlmConfig?.providers?.[provider] || {};
+            modelSelect.innerHTML = '';
+            const models = pData.available_models || [pData.model || 'default'];
+            models.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                if (m === pData.model) opt.selected = true;
+                modelSelect.appendChild(opt);
+            });
+
+            if (pData.has_key) {
+                statusLabel.textContent = '✓ Configured: ' + pData.api_key_masked;
+                keyHint.textContent = 'Purani key already set hai. Badalne ke liye nayi key dalein, ya khali chhod dein.';
+                keyInput.placeholder = pData.api_key_masked;
+            } else {
+                statusLabel.textContent = '⚠️ Not Configured';
+                keyHint.textContent = 'Nayi key paste karein aur "Save & Activate" dabayein.';
+                keyInput.placeholder = 'Paste your ' + (pData.name || provider) + ' API key';
+            }
+            keyInput.value = '';
+
+            if (provider === 'gemini') {
+                helpText.innerHTML = '• <b>Google Gemini Free Key:</b> <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#38bdf8; text-decoration:underline;">Google AI Studio (Click Karein)</a> par jaakar "Create API Key" dabayein aur yahan paste karein. 100% Free aur Best Quality!';
+            } else if (provider === 'groq') {
+                helpText.innerHTML = '• <b>Groq Cloud Free Key:</b> <a href="https://console.groq.com/keys" target="_blank" style="color:#38bdf8; text-decoration:underline;">Groq Console (Click Karein)</a> par free account banayein. Llama 3.3 70B model 500 tokens/sec ki ultra speed se chalega bilkul free!';
+            } else if (provider === 'openai') {
+                helpText.innerHTML = '• <b>OpenAI API Key:</b> <a href="https://platform.openai.com/api-keys" target="_blank" style="color:#38bdf8; text-decoration:underline;">OpenAI Platform</a> se GPT-4o key lein.';
+            } else if (provider === 'anthropic') {
+                helpText.innerHTML = '• <b>Anthropic Claude Key:</b> <a href="https://console.anthropic.com/" target="_blank" style="color:#38bdf8; text-decoration:underline;">Anthropic Console</a> se Claude 3.5 key generate karein.';
+            } else if (provider === 'openrouter') {
+                helpText.innerHTML = '• <b>OpenRouter Key:</b> <a href="https://openrouter.ai/keys" target="_blank" style="color:#38bdf8; text-decoration:underline;">OpenRouter.ai</a> par jakar key banayein (DeepSeek, Llama aur 100+ models support).';
+            } else if (provider === 'ollama') {
+                helpText.innerHTML = '• <b>Ollama Local:</b> Apne laptop par Ollama run karein (`ollama run llama3`). Isme kisi internet ya key ki zaroorat nahi hai.';
+                keyGroup.style.display = 'none';
+            }
+        }
+
+        function toggleKeyVisibility() {
+            const input = document.getElementById('apiKeyInput');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        async function testCurrentApi() {
+            const provider = document.getElementById('apiProviderSelect').value;
+            const model = document.getElementById('apiModelSelect').value;
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const resBox = document.getElementById('apiTestResult');
+            const testBtn = document.getElementById('btnTestApi');
+
+            testBtn.disabled = true;
+            testBtn.textContent = '⏳ Testing...';
+            resBox.style.display = 'block';
+            resBox.style.background = 'rgba(56, 189, 248, 0.15)';
+            resBox.style.border = '1px solid #38bdf8';
+            resBox.style.color = '#38bdf8';
+            resBox.innerHTML = '🔄 API server se connect kiya ja raha hai...';
+
+            try {
+                const formData = new FormData();
+                formData.append('provider', provider);
+                if (model) formData.append('model', model);
+                if (apiKey) formData.append('api_key', apiKey);
+
+                const resp = await fetch('/api/llm/test', { method: 'POST', body: formData });
+                const data = await resp.json();
+
+                if (data.success) {
+                    resBox.style.background = 'rgba(52, 211, 153, 0.15)';
+                    resBox.style.border = '1px solid #34d399';
+                    resBox.style.color = '#34d399';
+                    resBox.innerHTML = `<b>✓ Success! (${data.latency_ms}ms)</b><br>${data.message || ''}<br><small style="color:#cbd5e1;">Test Reply: <i>${data.sample_response || 'Active'}</i></small>`;
+                } else {
+                    resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+                    resBox.style.border = '1px solid #ef4444';
+                    resBox.style.color = '#f87171';
+                    resBox.innerHTML = `<b>✗ Connection Failed</b><br>${data.error || 'Check API key & internet'}`;
+                }
+            } catch (err) {
+                resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+                resBox.style.border = '1px solid #ef4444';
+                resBox.style.color = '#f87171';
+                resBox.innerHTML = `<b>✗ Error:</b> ${err.message}`;
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = '⚡ Test Connection';
+            }
+        }
+
+        async function saveCurrentApi() {
+            const provider = document.getElementById('apiProviderSelect').value;
+            const model = document.getElementById('apiModelSelect')?.value || '';
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const resBox = document.getElementById('apiTestResult');
+            const saveBtn = document.getElementById('btnSaveApi');
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Saving...';
+
+            try {
+                const formData = new FormData();
+                formData.append('provider', provider);
+                if (model) formData.append('model', model);
+                if (apiKey) formData.append('api_key', apiKey);
+                formData.append('set_active', 'true');
+
+                const resp = await fetch('/api/llm/save_key', { method: 'POST', body: formData });
+                const data = await resp.json();
+
+                if (data.success) {
+                    resBox.style.display = 'block';
+                    resBox.style.background = 'rgba(52, 211, 153, 0.15)';
+                    resBox.style.border = '1px solid #34d399';
+                    resBox.style.color = '#34d399';
+                    resBox.innerHTML = `<b>✓ API Setup Complete!</b><br>${data.message}`;
+
+                    await fetchAndRenderLlmStatus();
+                    setTimeout(() => {
+                        closeApiSettingsModal();
+                        appendMessage(`🤖 <b>AI Brain Active:</b> Ab Digi Mitra <b>${provider.toUpperCase()}</b> ke sath smart real-time answers dega!`);
+                    }, 1200);
+                } else {
+                    resBox.style.display = 'block';
+                    resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+                    resBox.style.border = '1px solid #ef4444';
+                    resBox.style.color = '#f87171';
+                    resBox.innerHTML = `<b>✗ Save Error:</b> ${data.message}`;
+                }
+            } catch (err) {
+                resBox.style.display = 'block';
+                resBox.style.background = 'rgba(239, 68, 68, 0.15)';
+                resBox.style.border = '1px solid #ef4444';
+                resBox.style.color = '#f87171';
+                resBox.innerHTML = `<b>✗ Error:</b> ${err.message}`;
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Save & Activate';
+            }
+        }
+
+        // Initialize status on startup
+        fetchAndRenderLlmStatus();
+
+        // ======================== 1. WHATSAPP BOT ========================
+        function openWhatsAppModal() {
+            document.getElementById('whatsappModal').style.display = 'flex';
+            onWaTemplateChange();
+        }
+
+        function onWaTemplateChange() {
+            const tmpl = document.getElementById('waTemplateSelect').value;
+            const customArea = document.getElementById('waCustomText');
+            if (tmpl === 'emitra_receipt') {
+                customArea.value = '🏛️ eMitra Receipt: Jan Aadhaar Enrollment Verify ho gaya! Token: RAJE-2026-88491. Fee: Rs. 50. Dhanyawad - Digi Mitra.';
+            } else if (tmpl === 'mandi_rates') {
+                customArea.value = '🌾 Mandi Live Bhav: Sarson: Rs. 5,980/Qtl, Gehun: Rs. 2,510/Qtl, Chana: Rs. 6,050/Qtl. High demand alert!';
+            } else if (tmpl === 'trading_alert') {
+                customArea.value = '📈 Trading Signal: NIFTY 50 Bullish Reversal detected at 24,500. Target: 24,800. Stop-loss: 24,350.';
+            } else {
+                customArea.value = 'Namaste! Digi Mitra Autonomous Super-Agent ki taraf se zaruri notice.';
+            }
+        }
+
+        async function dispatchWhatsApp() {
+            const phone = document.getElementById('waPhoneInput').value.trim();
+            const tmpl = document.getElementById('waTemplateSelect').value;
+            const text = document.getElementById('waCustomText').value.trim();
+            if (!phone) {
+                alert('Kripya mobile number darj karein!');
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('phone', phone);
+                formData.append('template_type', tmpl);
+                formData.append('custom_text', text);
+
+                const resp = await fetch('/api/whatsapp/send', { method: 'POST', body: formData });
+                const data = await resp.json();
+                document.getElementById('whatsappModal').style.display = 'none';
+
+                if (data.whatsapp_url) {
+                    window.open(data.whatsapp_url, '_blank');
+                    appendMessage(`📱 <b>WhatsApp Dispatch:</b> <a href="${data.whatsapp_url}" target="_blank" style="color:#25D366; text-decoration:underline;">Click Here if chat didn't open automatically (+${data.phone})</a>`);
+                }
+            } catch(e) {
+                alert('WhatsApp error: ' + e.message);
+            }
+        }
+
+        // ======================== 2. FORM & PDF GENERATOR ========================
+        function openFormModal() {
+            document.getElementById('formModal').style.display = 'flex';
+            document.getElementById('formPdfResult').style.display = 'none';
+        }
+
+        async function generateAndDownloadPdf() {
+            const formType = document.getElementById('formDocType').value;
+            const name = document.getElementById('formApplicantName').value.trim() || 'Vikas Sangwal';
+            const amount = document.getElementById('formAmountInput').value.trim() || '50';
+            const btn = document.getElementById('btnGenerateFormPdf');
+            const resBox = document.getElementById('formPdfResult');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Generating PDF...';
+            resBox.style.display = 'none';
+
+            try {
+                const formData = new FormData();
+                formData.append('form_type', formType);
+                formData.append('name', name);
+                formData.append('amount', amount);
+
+                const resp = await fetch('/api/forms/generate', { method: 'POST', body: formData });
+                const data = await resp.json();
+
+                if (data.success) {
+                    resBox.style.display = 'block';
+                    resBox.innerHTML = `
+                        <div style="background:rgba(52,211,153,0.15); border:1px solid #34d399; border-radius:10px; padding:12px;">
+                            <span style="color:#34d399; font-weight:700;">✓ PDF Ready: ${data.filename}</span><br>
+                            <a href="${data.download_url}" download style="background:#0284c7; color:white; padding:8px 16px; border-radius:8px; text-decoration:none; font-weight:700; display:inline-block; margin-top:8px;">⬇️ Download PDF Now</a>
+                        </div>
+                    `;
+                    appendMessage(`📄 <b>Official Document Generated:</b> <a href="${data.download_url}" download style="color:#38bdf8; text-decoration:underline;">Download ${data.filename}</a>`);
+                } else {
+                    resBox.style.display = 'block';
+                    resBox.innerHTML = `<span style="color:#f87171;">✗ Error: ${data.error || 'Failed to generate'}</span>`;
+                }
+            } catch(e) {
+                resBox.style.display = 'block';
+                resBox.innerHTML = `<span style="color:#f87171;">✗ Error: ${e.message}</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '⚡ Generate & Download PDF';
+            }
+        }
+
+        // ======================== 3. SARKARI RADAR ========================
+        function openYojnaModal() {
+            document.getElementById('yojnaModal').style.display = 'flex';
+            loadRadarCategory('yojna');
+        }
+
+        async function loadRadarCategory(cat) {
+            const list = document.getElementById('radarContentList');
+            const btnY = document.getElementById('btnRadarYojna');
+            const btnV = document.getElementById('btnRadarVacancy');
+            const btnM = document.getElementById('btnRadarMandi');
+
+            btnY.style.background = cat === 'yojna' ? '#a855f7' : 'rgba(255,255,255,0.08)';
+            btnV.style.background = cat === 'vacancy' ? '#a855f7' : 'rgba(255,255,255,0.08)';
+            btnM.style.background = cat === 'mandi' ? '#a855f7' : 'rgba(255,255,255,0.08)';
+
+            list.innerHTML = '<p style="color:#94a3b8; text-align:center;">Loading latest radar updates...</p>';
+
+            try {
+                if (cat === 'yojna') {
+                    const resp = await fetch('/api/yojnas');
+                    const data = await resp.json();
+                    list.innerHTML = data.map(y => `
+                        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:12px;">
+                            <h4 style="color:#38bdf8; font-size:0.95rem; margin-bottom:4px;">🏛️ ${y.name}</h4>
+                            <p style="font-size:0.82rem; color:#cbd5e1; margin-bottom:4px;"><b>Labh:</b> ${y.benefit}</p>
+                            <p style="font-size:0.78rem; color:#94a3b8; margin-bottom:6px;"><b>Dastavez:</b> ${y.documents}</p>
+                            <span style="font-size:0.75rem; background:rgba(56,189,248,0.15); color:#38bdf8; padding:3px 8px; border-radius:6px;">Portal: ${y.apply_portal}</span>
+                        </div>
+                    `).join('');
+                } else if (cat === 'vacancy') {
+                    const resp = await fetch('/api/vacancies');
+                    const data = await resp.json();
+                    list.innerHTML = data.map(v => `
+                        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:12px;">
+                            <h4 style="color:#34d399; font-size:0.95rem; margin-bottom:4px;">💼 ${v.post}</h4>
+                            <p style="font-size:0.82rem; color:#cbd5e1; margin-bottom:4px;"><b>Dept:</b> ${v.department} | <b>Posts:</b> ${v.posts_count}</p>
+                            <p style="font-size:0.78rem; color:#94a3b8; margin-bottom:6px;"><b>Yogyata:</b> ${v.qualification}</p>
+                            <span style="font-size:0.75rem; background:rgba(52,211,153,0.15); color:#34d399; padding:3px 8px; border-radius:6px;">${v.action}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    const resp = await fetch('/api/mandi_rates');
+                    const data = await resp.json();
+                    list.innerHTML = data.map(m => `
+                        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <h4 style="color:#fbbf24; font-size:0.92rem;">🌾 ${m.commodity}</h4>
+                                <span style="font-size:0.78rem; color:#94a3b8;">${m.mandi}</span>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:0.95rem; font-weight:700; color:#f8fafc;">₹${m.modal} / Qtl</div>
+                                <span style="font-size:0.75rem; color:#34d399;">${m.trend} (₹${m.min_price} - ₹${m.max_price})</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch(e) {
+                list.innerHTML = `<p style="color:#f87171; text-align:center;">Error: ${e.message}</p>`;
+            }
+        }
+
+        // ======================== 4. AI REEL MAKER ========================
+        function openReelModal() {
+            document.getElementById('reelModal').style.display = 'flex';
+            document.getElementById('reelResultBox').style.display = 'none';
+        }
+
+        async function generateShortReel() {
+            const cat = document.getElementById('reelCategorySelect').value;
+            const title = document.getElementById('reelTitleInput').value.trim();
+            const btn = document.getElementById('btnCreateReel');
+            const resBox = document.getElementById('reelResultBox');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Rendering 9:16 Video...';
+            resBox.style.display = 'none';
+
+            try {
+                const formData = new FormData();
+                formData.append('category', cat);
+                if (title) formData.append('title', title);
+
+                const resp = await fetch('/api/reels/create', { method: 'POST', body: formData });
+                const data = await resp.json();
+
+                if (data.success) {
+                    resBox.style.display = 'block';
+                    resBox.innerHTML = `
+                        <div style="background:rgba(236,72,153,0.15); border:1px solid #ec4899; border-radius:12px; padding:12px;">
+                            <span style="color:#f472b6; font-weight:700;">✓ Short Video Rendered!</span><br>
+                            <p style="font-size:0.8rem; color:#cbd5e1; margin:6px 0;">Format: 720x1280 (9:16 Vertical HD)</p>
+                            <a href="${data.download_url}" download style="background:linear-gradient(135deg, #ec4899, #db2777); color:white; padding:8px 18px; border-radius:8px; text-decoration:none; font-weight:700; display:inline-block; margin-top:6px;">▶️ Download MP4 Reel</a>
+                        </div>
+                    `;
+                    appendMessage(`🎬 <b>Reel Video Generated:</b> <a href="${data.download_url}" download style="color:#f472b6; text-decoration:underline;">Download ${data.filename}</a>`);
+                } else {
+                    resBox.style.display = 'block';
+                    resBox.innerHTML = `<span style="color:#f87171;">✗ Error: ${data.error || 'Failed to render'}</span>`;
+                }
+            } catch(e) {
+                resBox.style.display = 'block';
+                resBox.innerHTML = `<span style="color:#f87171;">✗ Error: ${e.message}</span>`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '⚡ Render 9:16 Reel Video (MP4)';
+            }
+        }
 
     </script>
 </body>

@@ -1,0 +1,65 @@
+{
+  "active_provider": "local",
+  "system_prompt": "Aap 'Digi Mitra' (डिजी मित्र) hain — Vikas ji ke personal, sovereign AI super-agent aur desi dost. Aap Hindi, Hinglish aur English me naturally baat karte hain. Aapka vyavahar hamesha madadgar, tez, thoda desi/dostana aur sammanit (respectful) hota hai. User ke sawalon ke direct, accurate aur behtareen answers dein. Robotic baatein mat karein, real human saathi ki tarah guide karein.",
+  "providers": {
+    "gemini": {
+      "name": "Google Gemini",
+      "api_key": "",
+      "model": "gemini-1.5-flash",
+      "available_models": [
+        "gemini-1.5-flash",
+        "gemini-1.5-pro",
+        "gemini-2.0-flash-exp"
+      ]
+    },
+    "groq": {
+      "name": "Groq (Super Fast & Free)",
+      "api_key": "",
+      "model": "llama-3.3-70b-versatile",
+      "available_models": [
+        "llama-3.3-70b-versatile",
+        "llama-3.1-8b-instant",
+        "mixtral-8x7b-32768"
+      ]
+    },
+    "openai": {
+      "name": "OpenAI",
+      "api_key": "",
+      "model": "gpt-4o-mini",
+      "available_models": [
+        "gpt-4o-mini",
+        "gpt-4o",
+        "gpt-3.5-turbo"
+      ]
+    },
+    "anthropic": {
+      "name": "Anthropic Claude",
+      "api_key": "sk-vDDGUxK3aY5AAV34B9tXthk8MgfTLfMqyqSrZeLN1vx4RjD8",
+      "model": "claude-3-5-haiku-20241022",
+      "available_models": [
+        "claude-3-5-haiku-20241022",
+        "claude-3-5-sonnet-20241022"
+      ]
+    },
+    "openrouter": {
+      "name": "OpenRouter",
+      "api_key": "",
+      "model": "deepseek/deepseek-chat",
+      "available_models": [
+        "deepseek/deepseek-chat",
+        "meta-llama/llama-3.3-70b-instruct",
+        "google/gemini-flash-1.5"
+      ]
+    },
+    "ollama": {
+      "name": "Ollama (Local Server)",
+      "url": "http://localhost:11434",
+      "model": "llama3:8b",
+      "available_models": [
+        "llama3:8b",
+        "mistral:latest",
+        "qwen2.5:latest"
+      ]
+    }
+  }
+}

@@ -45,6 +45,12 @@ from digi_mitra.wise_mentor import WiseMentorGuardian
 from digi_mitra.job_scanner import JobVacancyScannerEngine
 from digi_mitra.wake_word_engine import CustomWakeWordEngine
 from digi_mitra.knowledge_brain import SovereignKnowledgeBrain
+from digi_mitra.llm_engine import LLMEngine
+from digi_mitra.screen_worker import AutoScreenWorker
+from digi_mitra.whatsapp_bot import WhatsAppAutomationBot
+from digi_mitra.form_pdf_generator import FormPDFGenerator
+from digi_mitra.yojna_radar import SarkariYojnaRadar
+from digi_mitra.reels_generator import ReelsGenerator
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -76,6 +82,12 @@ wise_mentor = WiseMentorGuardian()
 job_scanner = JobVacancyScannerEngine()
 wake_engine = CustomWakeWordEngine()
 knowledge_brain = SovereignKnowledgeBrain()
+llm_engine = LLMEngine()
+screen_worker = AutoScreenWorker()
+whatsapp_bot = WhatsAppAutomationBot()
+form_pdf_gen = FormPDFGenerator()
+yojna_radar = SarkariYojnaRadar()
+reels_gen = ReelsGenerator()
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 app.mount("/static", StaticFiles(directory="digi_mitra/web_dashboard/static"), name="static")
@@ -132,12 +144,93 @@ async def process_user_command(query: str = Form(...)):
                 reply = f"🚨 <b>SECURITY ALERT (Suraksha Chetavni)</b>:<br>{alert_check['security_alert']}<br><br>👉 <i>{alert_check['prompt']}</i><br><small style='color:#f87171;'>Suraksha ke niyam anusar jab tak aap Dashboard se 'Allow' switch ON nahi karenge, yeh app 100% blocked rahega.</small>"
                 return JSONResponse({"intent": "security_alert", "reply": legal_engine.format_respectful_response(reply)})
 
-    # 2. Sovereign Knowledge Brain: Check if user is asking a question, seeking advice or shopping recommendation
+    # 2. Auto Screen Worker: Check if user wants screen drawing, click, typing, or screen control
+    screen_res = screen_worker.execute_natural_command(query)
+    if screen_res:
+        reply_txt = screen_res.get("message") or screen_res.get("error", "Screen action complete")
+        clean_reply = legal_engine.format_respectful_response(reply_txt)
+        history_learner.record_interaction(query, clean_reply, "screen_worker")
+        return JSONResponse({"intent": "screen_worker", "reply": clean_reply, "data": screen_res})
+
+    # 3. Sovereign Knowledge Brain: Check if user is asking a question, seeking advice or shopping recommendation
     kb_answer = knowledge_brain.answer_question(query)
     if kb_answer and kb_answer.get("matched"):
         clean_reply = legal_engine.format_respectful_response(kb_answer["reply"])
         history_learner.record_interaction(query, clean_reply, "knowledge_qa")
         return JSONResponse({"intent": "knowledge_qa", "reply": clean_reply})
+
+    # 4. WhatsApp Automation Bot
+    if any(w in query.lower() for w in ["whatsapp", "whatsap", "watsap", "wa msg", "wa alert"]):
+        import re
+        phone_match = re.search(r'(\d{10})', query)
+        phone = phone_match.group(1) if phone_match else "919876543210"
+        if "mandi" in query.lower():
+            wa_text = whatsapp_bot.format_template("mandi_rates", {"mandi": "Rajasthan APMC"})
+        elif any(k in query.lower() for k in ["emitra", "receipt", "rasid"]):
+            wa_text = whatsapp_bot.format_template("emitra_receipt", {"customer_name": "Vikas ji", "service_name": "Jan Aadhaar"})
+        elif "trade" in query.lower():
+            wa_text = whatsapp_bot.format_template("trading_alert", {"symbol": "NIFTY 50", "signal": "BUY", "price": "24,500"})
+        else:
+            wa_text = whatsapp_bot.format_template("notice", {"custom_text": query})
+
+        wa_url = whatsapp_bot.create_whatsapp_url(phone, wa_text)
+        reply = (
+            f"📱 <b>Digi Mitra WhatsApp Dispatch Ready:</b><br><br>"
+            f"<a href='{wa_url}' target='_blank' style='background:#25D366; color:white; padding:8px 18px; border-radius:10px; text-decoration:none; font-weight:700; display:inline-block;'>⚡ Click to Open WhatsApp (+{phone})</a><br><br>"
+            f"<small style='color:#94a3b8;'>Message Preview:</small><br><i>{wa_text.replace(chr(10), '<br>')}</i>"
+        )
+        clean_reply = legal_engine.format_respectful_response(reply)
+        history_learner.record_interaction(query, clean_reply, "whatsapp_dispatch")
+        return JSONResponse({"intent": "whatsapp_dispatch", "reply": clean_reply, "whatsapp_url": wa_url})
+
+    # 5. Instant Legal & Sarkari Form PDF Generator
+    if any(w in query.lower() for w in ["pdf banao", "form banao", "shapath patra", "rent agreement", "affidavit", "rasid banao", "invoice banao"]):
+        f_type = "shapath_patra"
+        if any(k in query.lower() for k in ["rent", "kiraya"]):
+            f_type = "rent_agreement"
+        elif any(k in query.lower() for k in ["rasid", "receipt"]):
+            f_type = "emitra_receipt"
+        elif any(k in query.lower() for k in ["invoice", "bill"]):
+            f_type = "invoice"
+        elif "affidavit" in query.lower():
+            f_type = "affidavit"
+
+        pdf_res = form_pdf_gen.generate_form(f_type, {"name": "Vikas Sangwal", "customer_name": "Vikas Sangwal"})
+        reply = (
+            f"📄 <b>Official Legal / Sarkari Document Ready!</b><br><br>"
+            f"File: <b>{pdf_res['filename']}</b><br><br>"
+            f"<a href='{pdf_res['download_url']}' download style='background:#0284c7; color:white; padding:8px 18px; border-radius:10px; text-decoration:none; font-weight:700; display:inline-block;'>⬇️ Download Ready-To-Print PDF</a>"
+        )
+        clean_reply = legal_engine.format_respectful_response(reply)
+        history_learner.record_interaction(query, clean_reply, "pdf_generation")
+        return JSONResponse({"intent": "pdf_generation", "reply": clean_reply, "download_url": pdf_res["download_url"]})
+
+    # 6. Sarkari Yojna & Vacancy Radar
+    if any(w in query.lower() for w in ["yojana", "yojna", "chiranjeevi", "bhatta", "kisan samman", "sarkari labh", "naukri", "vacancy", "bharti"]):
+        if any(w in query.lower() for w in ["naukri", "vacancy", "bharti"]):
+            vacs = yojna_radar.get_vacancies()
+            v_html = [f"<b>💼 {v['post']}</b> ({v['department']})<br>👥 <i>Posts:</i> {v['posts_count']} | 🎓 <i>Yogyata:</i> {v['qualification']}<br>🔗 <i>{v['action']}</i>" for v in vacs]
+            reply = "📢 <b>Top Active Sarkari Vacancies 2026:</b><br><br>" + "<br><br>".join(v_html)
+        else:
+            yojas = yojna_radar.search_yojanas(query)
+            y_html = [f"<b>🏛️ {y['name']}</b> ({y['department']})<br>🎁 <b>Labh:</b> {y['benefit']}<br>📋 <b>Dastavez:</b> {y['documents']}<br>👉 <i>Portal: {y['apply_portal']}</i>" for y in yojas]
+            reply = "🌟 <b>Sarkari Yojna Radar — Poori Jankari:</b><br><br>" + "<br><br>".join(y_html)
+        clean_reply = legal_engine.format_respectful_response(reply)
+        history_learner.record_interaction(query, clean_reply, "yojna_radar")
+        return JSONResponse({"intent": "yojna_radar", "reply": clean_reply})
+
+    # 7. Automated Reel Maker
+    if any(w in query.lower() for w in ["reel", "short video", "shorts", "video banao"]):
+        cat = "trading" if "trade" in query.lower() else "emitra" if "emitra" in query.lower() else "business"
+        reel_res = reels_gen.generate_reel(cat)
+        reply = (
+            f"🎬 <b>AI Short Reel Video Generated!</b><br><br>"
+            f"File: <b>{reel_res['filename']}</b> (9:16 Vertical HD Format)<br><br>"
+            f"<a href='{reel_res['download_url']}' download style='background:linear-gradient(135deg, #ec4899, #db2777); color:white; padding:8px 18px; border-radius:10px; text-decoration:none; font-weight:700; display:inline-block;'>▶️ Download / View Reel Video</a>"
+        )
+        clean_reply = legal_engine.format_respectful_response(reply)
+        history_learner.record_interaction(query, clean_reply, "reel_generator")
+        return JSONResponse({"intent": "reel_generator", "reply": clean_reply, "download_url": reel_res["download_url"]})
 
     result = {"intent": intent, "parsed": parsed, "reply": ""}
 
@@ -288,6 +381,21 @@ async def process_user_command(query: str = Form(...)):
         result["new_wake_word"] = ww_res["new_wake_word"]
 
     else:
+        # Check if an AI provider is active (Gemini, Groq, OpenAI, Anthropic, OpenRouter, Ollama)
+        if llm_engine.config.get("active_provider") != "local":
+            try:
+                ai_reply = await llm_engine.generate_response(query)
+                if ai_reply:
+                    clean_ai_reply = legal_engine.format_respectful_response(ai_reply)
+                    history_learner.record_interaction(query, clean_ai_reply, "ai_llm_chat")
+                    return JSONResponse({
+                        "intent": "ai_llm_chat",
+                        "reply": clean_ai_reply,
+                        "provider": llm_engine.config.get("active_provider")
+                    })
+            except Exception as e:
+                print(f"[Server] LLM fallback triggered: {e}")
+
         # 100% Real Human Conversational Vibe (Samne wale ko bilkul pata na chale)
         human_reply = human_chat.chat_like_real_human(query)
         result["reply"] = human_reply
@@ -307,9 +415,37 @@ async def process_user_command(query: str = Form(...)):
 
 
 @app.post("/api/draw_chart")
-async def draw_chart_pattern():
-    res = await trading_engine.draw_on_chart_screen()
+async def draw_chart_pattern(pattern: str = Form("trendline")):
+    """Draw trendlines or patterns on desktop screen safely"""
+    res = screen_worker.safe_draw(pattern)
     return JSONResponse(res)
+
+
+@app.get("/api/screen/status")
+async def get_screen_status():
+    """Returns resolution, cursor pos, and active window"""
+    return JSONResponse(screen_worker.get_screen_status())
+
+
+@app.post("/api/screen/action")
+async def execute_screen_action(
+    action: str = Form(...),
+    pattern: Optional[str] = Form("trendline"),
+    text: Optional[str] = Form(""),
+    direction: Optional[str] = Form("down")
+):
+    """Direct execution of screen worker actions"""
+    if action == "draw":
+        return JSONResponse(screen_worker.safe_draw(pattern or "trendline"))
+    elif action == "click":
+        return JSONResponse(screen_worker.safe_click())
+    elif action == "type":
+        return JSONResponse(screen_worker.safe_type(text or ""))
+    elif action == "scroll":
+        return JSONResponse(screen_worker.safe_scroll(direction=direction or "down"))
+    elif action == "switch_window":
+        return JSONResponse(screen_worker.safe_hotkey(["alt", "tab"]))
+    return JSONResponse({"success": False, "error": f"Unknown action: {action}"})
 
 
 @app.post("/api/upload_doc")
@@ -407,6 +543,122 @@ async def get_wake_word():
         "aliases": wake_engine.config.get("supported_aliases", []),
         "enabled": wake_engine.config.get("enabled", True)
     })
+
+
+@app.get("/api/llm/config")
+async def get_llm_config():
+    """Get public LLM configuration with masked API keys"""
+    return JSONResponse(llm_engine.get_public_config())
+
+
+@app.post("/api/llm/set_provider")
+async def set_llm_provider(provider: str = Form(...)):
+    """Set active LLM provider (local, gemini, groq, openai, anthropic, openrouter, ollama)"""
+    res = llm_engine.set_active_provider(provider)
+    return JSONResponse(res)
+
+
+@app.post("/api/llm/save_key")
+async def save_llm_key(
+    provider: str = Form(...),
+    api_key: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+    set_active: bool = Form(True)
+):
+    """Save API key and model for a provider and optionally set it active"""
+    res = llm_engine.update_provider_config(provider, api_key=api_key, model=model, set_active=set_active)
+    return JSONResponse(res)
+
+
+@app.post("/api/llm/test")
+async def test_llm_connection(
+    provider: str = Form(...),
+    api_key: Optional[str] = Form(None),
+    model: Optional[str] = Form(None)
+):
+    """Test connection with the specified provider and API key"""
+    res = await llm_engine.test_connection(provider, api_key=api_key, model=model)
+    return JSONResponse(res)
+
+
+# ------------------ WHATSAPP BOT ENDPOINTS ------------------
+@app.post("/api/whatsapp/send")
+async def send_whatsapp_message(
+    phone: str = Form(...),
+    template_type: str = Form("notice"),
+    custom_text: Optional[str] = Form(""),
+    service_name: Optional[str] = Form("")
+):
+    msg = whatsapp_bot.format_template(template_type, {"custom_text": custom_text, "service_name": service_name})
+    res = whatsapp_bot.send_via_browser(phone, msg)
+    return JSONResponse(res)
+
+
+@app.post("/api/whatsapp/link")
+async def get_whatsapp_link(phone: str = Form(...), message: str = Form(...)):
+    url = whatsapp_bot.create_whatsapp_url(phone, message)
+    return JSONResponse({"whatsapp_url": url})
+
+
+# ------------------ FORM & PDF GENERATOR ENDPOINTS ------------------
+@app.post("/api/forms/generate")
+async def generate_legal_form(
+    form_type: str = Form("shapath_patra"),
+    name: Optional[str] = Form("Vikas Sangwal"),
+    owner_name: Optional[str] = Form("Makaan Malik"),
+    tenant_name: Optional[str] = Form("Kirayedaar"),
+    amount: Optional[str] = Form("50"),
+    service_name: Optional[str] = Form("Jan Aadhaar Enrollment")
+):
+    data = {
+        "name": name,
+        "customer_name": name,
+        "owner_name": owner_name,
+        "tenant_name": tenant_name,
+        "amount": amount,
+        "service_name": service_name
+    }
+    res = form_pdf_gen.generate_form(form_type, data)
+    return JSONResponse(res)
+
+
+@app.get("/api/forms/download/{filename}")
+async def download_generated_form(filename: str):
+    file_path = form_pdf_gen.output_dir / filename
+    if file_path.exists():
+        return FileResponse(str(file_path), media_type="application/pdf", filename=filename)
+    return JSONResponse({"error": "File not found"}, status_code=404)
+
+
+# ------------------ YOJNA & VACANCY RADAR ENDPOINTS ------------------
+@app.get("/api/yojnas")
+async def get_yojanas(search: Optional[str] = ""):
+    return JSONResponse(yojna_radar.search_yojanas(search or ""))
+
+
+@app.get("/api/vacancies")
+async def get_vacancies():
+    return JSONResponse(yojna_radar.get_vacancies())
+
+
+@app.get("/api/mandi_rates")
+async def get_mandi_rates(commodity: Optional[str] = None):
+    return JSONResponse(yojna_radar.get_mandi_rates(commodity))
+
+
+# ------------------ REELS GENERATOR ENDPOINTS ------------------
+@app.post("/api/reels/create")
+async def create_reel_video(category: str = Form("trading"), title: Optional[str] = Form("")):
+    res = reels_gen.generate_reel(category=category, title=title or "")
+    return JSONResponse(res)
+
+
+@app.get("/api/reels/download/{filename}")
+async def download_reel_video(filename: str):
+    file_path = reels_gen.output_dir / filename
+    if file_path.exists():
+        return FileResponse(str(file_path), media_type="video/mp4", filename=filename)
+    return JSONResponse({"error": "File not found"}, status_code=404)
 
 
 @app.get("/api/status")

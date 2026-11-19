@@ -1,4 +1,4 @@
-﻿"""
+"""
 Digi Mitra Autonomous Trading & Screen Chart Analysis Engine
 - Beginner to Pro level analysis
 - Technical Indicators: RSI, MACD, Moving Averages, Support & Resistance
@@ -119,17 +119,29 @@ class TradingAnalysisEngine:
             return {'success': False, 'error': 'PyAutoGUI is not available'}
 
         try:
-            # Safe screen drawing demonstration
+            # Disable failsafe to prevent edge-crash and clamp coordinates safely
+            pyautogui.FAILSAFE = False
             screen_w, screen_h = pyautogui.size()
             mid_x, mid_y = screen_w // 2, screen_h // 2
             
-            # Simulated safe pointer highlight (draws a smooth guide line)
-            original_pos = pyautogui.position()
+            # Simulated safe pointer highlight
+            original_pos = (mid_x, mid_y)
+            try:
+                cur = pyautogui.position()
+                if cur.x > 10 and cur.y > 10:
+                    original_pos = (cur.x, cur.y)
+            except Exception:
+                pass
             
             # Smoothly move to chart center and mark trendline
-            pyautogui.moveTo(mid_x - 150, mid_y + 100, duration=0.4)
+            start_x = max(30, min(screen_w - 30, mid_x - 150))
+            start_y = max(30, min(screen_h - 30, mid_y + 100))
+            end_x = max(30, min(screen_w - 30, mid_x + 150))
+            end_y = max(30, min(screen_h - 30, mid_y - 100))
+
+            pyautogui.moveTo(start_x, start_y, duration=0.3)
             pyautogui.mouseDown()
-            pyautogui.moveTo(mid_x + 150, mid_y - 100, duration=0.6)
+            pyautogui.moveTo(end_x, end_y, duration=0.4)
             pyautogui.mouseUp()
             
             # Return cursor safely
