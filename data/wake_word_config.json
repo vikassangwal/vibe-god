@@ -1,5 +1,5 @@
 {
-  "active_wake_word": "sakha",
+  "active_wake_word": "sikha",
   "supported_aliases": [
     "hey digi",
     "suno mitra",
@@ -7,7 +7,8 @@
     "digi",
     "bhai",
     "mitra",
-    "sakha"
+    "sakha",
+    "sikha"
   ],
   "enabled": true,
   "sensitivity": 0.8

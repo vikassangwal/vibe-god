@@ -19,5 +19,61 @@
     "reply": "Sahi baat hai bhai. Tu bas hukum kar, baaki main sambhal lunga.",
     "intent": "general_assistance",
     "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 20:26:07",
+    "user": "MUJHE SOPING K LIYE WACH DO",
+    "reply": "Namaste Vikas ji! 🧠 Research Complete (MUJHE SOPING K LIYE WACH DO):\nMUJHE SOPING K LIYE WACH DO par autonomous research complete ho gayi hai.",
+    "intent": "research",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 20:26:30",
+    "user": "eMitra Jan Aadhaar aur Bonafide service fill",
+    "reply": "Namaste Vikas ji! 🏛️ eMitra Portal Automation active: 'eMitra Jan Aadhaar aur Bonafide service fill'. Forms, Jan-Aadhaar & Caste Certificate processing queued with auto-captcha solver!\n\n<small style='color:#94a3b8;'>⚖️ eMitra DPDP Act: Dastavez surakshit hain aur portal niyam anusar bhare ja rahe hain.</small>",
+    "intent": "emitra_service",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 20:26:32",
+    "user": "eMitra Jan Aadhaar aur Bonafide service fill",
+    "reply": "Namaste Vikas ji! 🏛️ eMitra Portal Automation active: 'eMitra Jan Aadhaar aur Bonafide service fill'. Forms, Jan-Aadhaar & Caste Certificate processing queued with auto-captcha solver!\n\n<small style='color:#94a3b8;'>⚖️ eMitra DPDP Act: Dastavez surakshit hain aur portal niyam anusar bhare ja rahe hain.</small>",
+    "intent": "emitra_service",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 20:26:33",
+    "user": "eMitra Jan Aadhaar aur Bonafide service fill",
+    "reply": "Namaste Vikas ji! 🏛️ eMitra Portal Automation active: 'eMitra Jan Aadhaar aur Bonafide service fill'. Forms, Jan-Aadhaar & Caste Certificate processing queued with auto-captcha solver!\n\n<small style='color:#94a3b8;'>⚖️ eMitra DPDP Act: Dastavez surakshit hain aur portal niyam anusar bhare ja rahe hain.</small>",
+    "intent": "emitra_service",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 21:02:23",
+    "user": "mujhe soping k liye wach do",
+    "reply": "Namaste Vikas ji! <h3>⌚ Shopping Recommendation: Best Watches (Ghadi) 2026</h3><br><b>Aapke budget aur zaroorat ke hisab se top watches ki list:</b><br><br><b>1. Budget Smartwatches (₹1,200 - ₹2,500):</b><br>• <b>Noise ColorFit Pulse / Icon:</b> 1.85\" display, Bluetooth Calling, 7-day battery, heart rate & SpO2 monitor.<br>• <b>boAt Wave Call / Storm Pro:</b> Metal body, clear speaker calling, 100+ sports modes, affordable.<br>• <b>Fire-Boltt Ninja / Phoenix:</b> Premium look, rotating crown, AMOLED screen options.<br><br><b>2. Mid-Range Performance Watches (₹3,000 - ₹6,000):</b><br>• <b>Amazfit Bip / Pop Series:</b> Real GPS tracking, accurate sleep and health tracking, 14-day battery.<br>• <b>OnePlus Nord Watch:</b> AMOLED 60Hz smooth display, fast charging.<br><br><b>3. Classic Analog / Formal Watches:</b><br>• <b>Titan Karishma / Classique:</b> Shaadi aur formal functions ke liye sabse best, 2 saal warranty.<br>• <b>Fastrack Casuals:</b> Stylish aur trendy college/daily wear ke liye.<br>• <b>Casio Vintage / Enticer:</b> Sabse durable aur timeless classic design.<br><br>💡 <b>Kharidne se pehle dhyan dein:</b> Bluetooth Calling zaroor check karein agar phone pocket me rakhkar baat karni ho, aur AMOLED screen ho toh dhoop mein saaf dikhta hai.",
+    "intent": "knowledge_qa",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 21:03:56",
+    "user": "mujhe soping k liye wach do",
+    "reply": "Namaste Vikas ji! <h3>⌚ Shopping Recommendation: Best Watches (Ghadi) 2026</h3><br><b>Aapke budget aur zaroorat ke hisab se top watches ki list:</b><br><br><b>1. Budget Smartwatches (₹1,200 - ₹2,500):</b><br>• <b>Noise ColorFit Pulse / Icon:</b> 1.85\" display, Bluetooth Calling, 7-day battery, heart rate & SpO2 monitor.<br>• <b>boAt Wave Call / Storm Pro:</b> Metal body, clear speaker calling, 100+ sports modes, affordable.<br>• <b>Fire-Boltt Ninja / Phoenix:</b> Premium look, rotating crown, AMOLED screen options.<br><br><b>2. Mid-Range Performance Watches (₹3,000 - ₹6,000):</b><br>• <b>Amazfit Bip / Pop Series:</b> Real GPS tracking, accurate sleep and health tracking, 14-day battery.<br>• <b>OnePlus Nord Watch:</b> AMOLED 60Hz smooth display, fast charging.<br><br><b>3. Classic Analog / Formal Watches:</b><br>• <b>Titan Karishma / Classique:</b> Shaadi aur formal functions ke liye sabse best, 2 saal warranty.<br>• <b>Fastrack Casuals:</b> Stylish aur trendy college/daily wear ke liye.<br>• <b>Casio Vintage / Enticer:</b> Sabse durable aur timeless classic design.<br><br>💡 <b>Kharidne se pehle dhyan dein:</b> Bluetooth Calling zaroor check karein agar phone pocket me rakhkar baat karni ho, aur AMOLED screen ho toh dhoop mein saaf dikhta hai.",
+    "intent": "knowledge_qa",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 21:04:22",
+    "user": "Jan Aadhaar kaise banwaye?",
+    "reply": "Namaste Vikas ji! <h3>🏛️ Jan Aadhaar Card (जन आधार) — Poori Jankari</h3><br><b>Jan Aadhaar Card Banwane aur Update Karne Ka Tarika:</b><br><br>📋 <b>Zaroori Documents:</b><br>1. Parivar ke sabhi sadasyon ke Aadhaar Card.<br>2. Mukhiya (Mahila Mukhiya) ki Bank Passbook.<br>3. Ration Card aur Passport size photo.<br>4. Mobile number (jo Aadhaar se link ho OTP ke liye).<br><br>⚙️ <b>Step-by-Step Process:</b><br>1. eMitra portal (sso.rajasthan.gov.in) par Jan Aadhaar Enrollment service chunein.<br>2. Mahila mukhiya ki detail bharein aur baki sadasyon ko add karein.<br>3. Documents upload karke submit karein. 15-30 din mein verification ke baad Jan Aadhaar number generate ho jata hai.<br><br>👉 <i>Digi Mitra aapke documents ko auto-resize karke eMitra portal par submit kar sakta hai!</i>",
+    "intent": "knowledge_qa",
+    "feedback": "neutral"
+  },
+  {
+    "timestamp": "2026-11-18 21:47:15",
+    "user": "Boliye, main active hoon...",
+    "reply": "Namaste Vikas ji! 🧠 Research Complete (Boliye, main active hoon...):\nBoliye, main active hoon... par autonomous research complete ho gayi hai.",
+    "intent": "research",
+    "feedback": "neutral"
   }
 ]
