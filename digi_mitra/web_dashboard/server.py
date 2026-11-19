@@ -51,6 +51,8 @@ from digi_mitra.whatsapp_bot import WhatsAppAutomationBot
 from digi_mitra.form_pdf_generator import FormPDFGenerator
 from digi_mitra.yojna_radar import SarkariYojnaRadar
 from digi_mitra.reels_generator import ReelsGenerator
+from digi_mitra.mobile_guardian import MobileGuardianGate
+from digi_mitra.all_rounder_agent import SovereignAllRounderAgent
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -88,6 +90,17 @@ whatsapp_bot = WhatsAppAutomationBot()
 form_pdf_gen = FormPDFGenerator()
 yojna_radar = SarkariYojnaRadar()
 reels_gen = ReelsGenerator()
+mobile_guardian = MobileGuardianGate()
+all_rounder_agent = SovereignAllRounderAgent(
+    mobile_guardian=mobile_guardian,
+    screen_worker=screen_worker,
+    whatsapp_bot=whatsapp_bot,
+    form_pdf_gen=form_pdf_gen,
+    yojna_radar=yojna_radar,
+    reels_gen=reels_gen,
+    trading_engine=trading_engine,
+    llm_engine=llm_engine
+)
 
 templates = Jinja2Templates(directory="digi_mitra/web_dashboard/templates")
 app.mount("/static", StaticFiles(directory="digi_mitra/web_dashboard/static"), name="static")
@@ -659,6 +672,61 @@ async def download_reel_video(filename: str):
     if file_path.exists():
         return FileResponse(str(file_path), media_type="video/mp4", filename=filename)
     return JSONResponse({"error": "File not found"}, status_code=404)
+
+
+# ------------------ MOBILE GUARDIAN 2FA ENDPOINTS ------------------
+@app.get("/mobile", response_class=HTMLResponse)
+async def mobile_guardian_ui(request: Request):
+    local_ip = get_local_ip()
+    return templates.TemplateResponse("mobile.html", {
+        "request": request,
+        "local_ip": local_ip,
+        "mode": mobile_guardian.mode,
+        "kill_active": mobile_guardian.emergency_stop_active
+    })
+
+
+@app.get("/api/mobile/pending_requests")
+async def get_mobile_pending_requests():
+    return JSONResponse(mobile_guardian.get_active_pending_requests())
+
+
+@app.post("/api/mobile/decide")
+async def decide_mobile_request(req_id: str = Form(...), action: str = Form(...)):
+    res = mobile_guardian.decide_request(req_id, action)
+    return JSONResponse(res)
+
+
+@app.post("/api/mobile/emergency_kill")
+async def toggle_mobile_emergency_kill(halt: bool = Form(...)):
+    res = mobile_guardian.toggle_emergency_kill_switch(halt)
+    return JSONResponse(res)
+
+
+@app.post("/api/mobile/mode")
+async def set_mobile_mode(mode: str = Form("strict")):
+    res = mobile_guardian.set_mode(mode)
+    return JSONResponse(res)
+
+
+@app.post("/api/agent/run_task")
+async def run_agent_task_with_gate(
+    task_name: str = Form(...),
+    category: str = Form("general"),
+    risk_level: str = Form("medium"),
+    details: str = Form("")
+):
+    async def sample_action():
+        return {"msg": f"Task '{task_name}' executed on laptop"}
+
+    res = await all_rounder_agent.execute_task_with_mobile_gate(
+        task_name=task_name,
+        category=category,
+        risk_level=risk_level,
+        details=details,
+        action_callable=sample_action
+    )
+    return JSONResponse(res)
 
 
 @app.get("/api/status")
