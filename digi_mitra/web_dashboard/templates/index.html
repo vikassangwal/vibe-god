@@ -125,7 +125,7 @@
                 <div class="action-icon">📸</div>
                 <div class="action-title">Upload & Resize Doc</div>
             </div>
-            <div class="action-card" onclick="drawChartScreen()" style="border-color: rgba(56, 189, 248, 0.4);">
+            <div class="action-card" onclick="openScreenWorkerModal()" style="border-color: rgba(56, 189, 248, 0.4);">
                 <div class="action-icon">🖥️</div>
                 <div class="action-title" style="color: #38bdf8;">Auto Screen Worker</div>
             </div>
@@ -420,6 +420,58 @@
             </div>
         </div>
 
+        
+        <!-- 5. AUTO SCREEN WORKER CONTROL MODAL -->
+        <div id="screenWorkerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:99999; justify-content:center; align-items:center; padding:15px;">
+            <div style="background: #0f172a; border: 1px solid #38bdf8; border-radius: 20px; max-width: 540px; width: 100%; padding: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height:92vh; overflow-y:auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
+                    <div>
+                        <h3 style="color:#38bdf8; font-size:1.25rem; display:flex; align-items:center; gap:8px;">
+                            <span>🖥️</span> Auto Screen Worker Control Panel
+                        </h3>
+                        <p style="font-size:0.8rem; color:#94a3b8; margin-top:2px;">Direct PC Desktop, Mouse, Keyboard & Chart Control</p>
+                    </div>
+                    <button onclick="document.getElementById('screenWorkerModal').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:1.6rem; cursor:pointer;">✕</button>
+                </div>
+
+                <div id="screenStatusLiveBox" style="background:#1e293b; border-radius:12px; padding:12px; margin-bottom:15px; font-size:0.85rem; color:#cbd5e1; border-left:4px solid #38bdf8;">
+                    🔄 <i>Screen status load ho raha hai...</i>
+                </div>
+
+                <!-- 1. Screen Drawing Tools -->
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:6px;">📈 Screen Par Draw Karein (Chart / Guides):</label>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
+                        <button onclick="runScreenDirectAction('draw', 'trendline')" style="background:#1e293b; border:1px solid #38bdf8; color:#38bdf8; padding:9px 6px; border-radius:8px; font-weight:600; font-size:0.82rem; cursor:pointer;">↗️ Trendline</button>
+                        <button onclick="runScreenDirectAction('draw', 'box')" style="background:#1e293b; border:1px solid #a855f7; color:#c084fc; padding:9px 6px; border-radius:8px; font-weight:600; font-size:0.82rem; cursor:pointer;">⏹️ S/R Box</button>
+                        <button onclick="runScreenDirectAction('draw', 'circle')" style="background:#1e293b; border:1px solid #eab308; color:#facc15; padding:9px 6px; border-radius:8px; font-weight:600; font-size:0.82rem; cursor:pointer;">⭕ Circle Focus</button>
+                    </div>
+                </div>
+
+                <!-- 2. Mouse & Navigation -->
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:6px;">🖱️ Mouse & Window Controls:</label>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                        <button onclick="runScreenDirectAction('click')" style="background:#1e293b; border:1px solid #334155; color:#f8fafc; padding:10px; border-radius:8px; font-weight:600; font-size:0.82rem; cursor:pointer;">🎯 Click Center</button>
+                        <button onclick="runScreenDirectAction('switch_window')" style="background:#1e293b; border:1px solid #334155; color:#f8fafc; padding:10px; border-radius:8px; font-weight:600; font-size:0.82rem; cursor:pointer;">🔄 Switch App (Alt+Tab)</button>
+                        <button onclick="runScreenDirectAction('scroll', null, null, 'down')" style="background:#1e293b; border:1px solid #334155; color:#f8fafc; padding:10px; border-radius:8px; font-weight:600; font-size:0.82rem; cursor:pointer;">⬇️ Scroll Down</button>
+                        <button onclick="runScreenDirectAction('scroll', null, null, 'up')" style="background:#1e293b; border:1px solid #334155; color:#f8fafc; padding:10px; border-radius:8px; font-weight:600; font-size:0.82rem; cursor:pointer;">⬆️ Scroll Up</button>
+                    </div>
+                </div>
+
+                <!-- 3. Auto Typing -->
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:#e2e8f0; margin-bottom:6px;">⌨️ Screen Par Auto Type Karein:</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="screenCustomTextInput" placeholder="Type text or numbers here..." style="flex:1; background:#1e293b; color:#f8fafc; border:1px solid #334155; border-radius:8px; padding:8px 12px; font-size:0.85rem; outline:none;">
+                        <button onclick="runScreenTypeCustom()" style="background:#38bdf8; color:#0f172a; border:none; border-radius:8px; padding:8px 14px; font-weight:700; font-size:0.85rem; cursor:pointer;">Type</button>
+                    </div>
+                </div>
+
+                <div id="screenActionLiveFeedback" style="display:none; padding:10px; border-radius:8px; font-size:0.85rem; text-align:center;"></div>
+            </div>
+        </div>
+
         <!-- Wake Word Settings Panel (Hidden by default) -->
         <div id="wakeWordPanel" style="display:none; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2)); border: 1px solid #818cf8; border-radius: 14px; padding: 15px; margin-bottom: 15px;">
             <h4 style="color: #a5b4fc; margin-bottom: 6px;">🎙️ Custom Wake Word — Apna Naam Rakhein</h4>
@@ -644,6 +696,68 @@
             } catch(e) {
                 appendMessage('Review submit error: ' + e.message);
             }
+        }
+
+        
+        async function openScreenWorkerModal() {
+            const m = document.getElementById('screenWorkerModal');
+            m.style.display = 'flex';
+            const statusBox = document.getElementById('screenStatusLiveBox');
+            statusBox.innerHTML = '🔄 <i>PC Screen resolution aur window check ho rahi hai...</i>';
+            try {
+                const resp = await fetch('/api/screen/status');
+                const d = await resp.json();
+                if (d.available) {
+                    statusBox.innerHTML = ✅ <b>PC Screen Status: ONLINE</b><br>• Resolution: <b> x </b> px<br>• Active Window: <i></i><br>• Cursor Position: (, );
+                } else {
+                    statusBox.innerHTML = ⚠️ <b>Screen Status:</b>  + (d.error || 'Unavailable');
+                }
+            } catch(e) {
+                statusBox.innerHTML = ⚠️ Error fetching status:  + e.message;
+            }
+        }
+
+        async function runScreenDirectAction(action, pattern=null, textVal=null, direction='down') {
+            const feedback = document.getElementById('screenActionLiveFeedback');
+            feedback.style.display = 'block';
+            feedback.style.background = '#1e293b';
+            feedback.style.color = '#38bdf8';
+            feedback.innerHTML = ⏳ Executing ...;
+
+            try {
+                const fd = new FormData();
+                fd.append('action', action);
+                if (pattern) fd.append('pattern', pattern);
+                if (textVal) fd.append('text', textVal);
+                if (direction) fd.append('direction', direction);
+
+                const resp = await fetch('/api/screen/action', { method: 'POST', body: fd });
+                const d = await resp.json();
+                if (d.success) {
+                    feedback.style.background = 'rgba(16, 185, 129, 0.2)';
+                    feedback.style.color = '#34d399';
+                    feedback.innerHTML = d.message || 'Action completed successfully!';
+                    appendMessage(d.message || PC Screen Action '' executed successfully!);
+                    if (d.message) speakText(d.message);
+                } else {
+                    feedback.style.background = 'rgba(239, 68, 68, 0.2)';
+                    feedback.style.color = '#f87171';
+                    feedback.innerHTML = d.error || 'Action failed';
+                }
+            } catch(e) {
+                feedback.style.background = 'rgba(239, 68, 68, 0.2)';
+                feedback.style.color = '#f87171';
+                feedback.innerHTML = 'Error: ' + e.message;
+            }
+        }
+
+        function runScreenTypeCustom() {
+            const val = document.getElementById('screenCustomTextInput').value;
+            if (!val || !val.trim()) {
+                alert('Pehle kuch text likhiye');
+                return;
+            }
+            runScreenDirectAction('type', null, val.trim());
         }
 
         async function drawChartScreen() {
