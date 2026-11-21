@@ -125,6 +125,15 @@
                 <div class="action-icon">📸</div>
                 <div class="action-title">Upload & Resize Doc</div>
             </div>
+            
+            <div class="action-card" onclick="runMorningBriefing()" style="border-color: rgba(245, 158, 11, 0.4);">
+                <div class="action-icon">🌅</div>
+                <div class="action-title" style="color: #f59e0b;">Morning Radar</div>
+            </div>
+            <div class="action-card" onclick="runSmartFileSorter()" style="border-color: rgba(16, 185, 129, 0.4);">
+                <div class="action-icon">🗂️</div>
+                <div class="action-title" style="color: #34d399;">Clean Downloads</div>
+            </div>
             <div class="action-card" onclick="openScreenWorkerModal()" style="border-color: rgba(56, 189, 248, 0.4);">
                 <div class="action-icon">🖥️</div>
                 <div class="action-title" style="color: #38bdf8;">Auto Screen Worker</div>
@@ -699,6 +708,49 @@
         }
 
         
+        
+        async function runMorningBriefing() {
+            appendMessage('🌅 <b>Digi Mitra Morning Briefing:</b> Mandi, Sarkari Bharti aur Market load ho raha hai...', true);
+            try {
+                const resp = await fetch('/api/workflows/morning_briefing');
+                const d = await resp.json();
+                if (d.success) {
+                    const b = d.briefing;
+                    let out = <b></b><br><small style="color:#94a3b8;">🕒 </small><br><br>;
+                    out += 🌾 <b>Top Mandi Bhav:</b><br>;
+                    b.top_mandi_rates.forEach(r => {
+                        out += • : <b>₹/क्विंटल</b> ()<br>;
+                    });
+                    out += <br>🏛️ <b>Govt Vacancies:</b><br>;
+                    b.active_govt_vacancies.forEach(v => {
+                        out += • : <b></b> ()<br>;
+                    });
+                    appendMessage(out);
+                    speakText('Suprabhat Vikas ji! Aaj ka Mandi bhav aur sarkari bharti report taiyar hai.');
+                }
+            } catch(e) {
+                appendMessage('Morning briefing error: ' + e.message);
+            }
+        }
+
+        async function runSmartFileSorter() {
+            appendMessage('🗂️ <b>Smart File Sorter:</b> Downloads folder scan aur sort ho raha hai...', true);
+            try {
+                const fd = new FormData();
+                fd.append('folder', 'Downloads');
+                const resp = await fetch('/api/files/sort_folder', { method: 'POST', body: fd });
+                const d = await resp.json();
+                if (d.success) {
+                    appendMessage(d.message);
+                    speakText(d.message);
+                } else {
+                    appendMessage('⚠️ Error: ' + d.error);
+                }
+            } catch(e) {
+                appendMessage('File sorting error: ' + e.message);
+            }
+        }
+
         async function openScreenWorkerModal() {
             const m = document.getElementById('screenWorkerModal');
             m.style.display = 'flex';

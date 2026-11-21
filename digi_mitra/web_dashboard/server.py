@@ -53,6 +53,9 @@ from digi_mitra.yojna_radar import SarkariYojnaRadar
 from digi_mitra.reels_generator import ReelsGenerator
 from digi_mitra.mobile_guardian import MobileGuardianGate
 from digi_mitra.all_rounder_agent import SovereignAllRounderAgent
+from digi_mitra.screen_vision import ScreenVisionAI
+from digi_mitra.file_sorter import SmartFileSorter
+from digi_mitra.autonomous_workflows import AutonomousWorkflows
 from modules.doc_processor import DocProcessor, DocConfig
 from bots.emitra_bot import eMitraBot
 from core.config import Config
@@ -90,6 +93,14 @@ whatsapp_bot = WhatsAppAutomationBot()
 form_pdf_gen = FormPDFGenerator()
 yojna_radar = SarkariYojnaRadar()
 reels_gen = ReelsGenerator()
+screen_vision = ScreenVisionAI()
+file_sorter = SmartFileSorter()
+workflows = AutonomousWorkflows(
+    screen_worker=screen_worker,
+    yojna_radar=yojna_radar,
+    trading_engine=trading_engine,
+    form_pdf_gen=form_pdf_gen
+)
 mobile_guardian = MobileGuardianGate()
 all_rounder_agent = SovereignAllRounderAgent(
     mobile_guardian=mobile_guardian,
@@ -727,6 +738,54 @@ async def run_agent_task_with_gate(
         action_callable=sample_action
     )
     return JSONResponse(res)
+
+
+# ------------------ ADVANCED PC & VISION ENDPOINTS ------------------
+@app.get("/api/screen/live_mirror")
+async def get_screen_live_mirror():
+    """Returns base64 JPEG thumbnail of the PC screen for live mobile mirroring"""
+    return JSONResponse(screen_vision.get_live_screen_base64())
+
+
+@app.post("/api/screen/ocr_click")
+async def click_screen_text(text: str = Form(...)):
+    """Finds text on PC screen via OCR and clicks it"""
+    res = screen_vision.find_and_click_text(text)
+    return JSONResponse(res)
+
+
+@app.post("/api/files/sort_folder")
+async def sort_user_folder(folder: str = Form("Downloads")):
+    """Automatically categorizes and organizes messy files in Downloads or Desktop"""
+    res = file_sorter.scan_and_sort(folder)
+    return JSONResponse(res)
+
+
+@app.get("/api/workflows/morning_briefing")
+async def get_morning_briefing():
+    """One-click morning briefing of Mandi, Sarkari Vacancies & Markets"""
+    return JSONResponse(workflows.run_morning_briefing())
+
+
+@app.post("/api/workflows/daily_report")
+async def create_daily_report(tokens: int = Form(15), revenue: float = Form(750.0)):
+    """Generates professional eMitra closing revenue summary PDF"""
+    return JSONResponse(workflows.generate_daily_shop_report(tokens, revenue))
+
+
+@app.post("/api/mobile/trackpad")
+async def mobile_trackpad_move(dx: int = Form(0), dy: int = Form(0), click: bool = Form(False)):
+    """Controls PC mouse cursor from mobile touch surface"""
+    try:
+        import pyautogui
+        pyautogui.FAILSAFE = False
+        if dx != 0 or dy != 0:
+            pyautogui.moveRel(dx, dy)
+        if click:
+            pyautogui.click()
+        return JSONResponse({"success": True})
+    except Exception as e:
+        return JSONResponse({"success": False, "error": str(e)})
 
 
 @app.get("/api/status")
